@@ -1,0 +1,1047 @@
+{
+  "id": "refactoring-techniques",
+  "title": "Refactoring Techniques",
+  "description": "The refactoring catalog from refactoring.guru, one line each. Follow the links for step-by-step mechanics and examples.",
+  "groups": [
+    "Composing Methods",
+    "Moving Features between Objects",
+    "Organizing Data",
+    "Simplifying Conditional Expressions",
+    "Simplifying Method Calls",
+    "Dealing with Generalization"
+  ],
+  "source": {
+    "name": "refactoring.guru",
+    "url": "https://refactoring.guru/refactoring/catalog"
+  },
+  "entries": [
+    {
+      "id": "extract-method",
+      "title": "Extract Method",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Move a fragment of code into its own well-named method.",
+      "related": [
+        "long-method",
+        "comments",
+        "duplicate-code",
+        "feature-envy",
+        "message-chains"
+      ],
+      "links": [
+        {
+          "label": "Extract Method on refactoring.guru",
+          "url": "https://refactoring.guru/extract-method"
+        }
+      ]
+    },
+    {
+      "id": "inline-method",
+      "title": "Inline Method",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Replace calls to a trivial method with its body, then delete it.",
+      "related": [
+        "speculative-generality",
+        "middle-man"
+      ],
+      "links": [
+        {
+          "label": "Inline Method on refactoring.guru",
+          "url": "https://refactoring.guru/inline-method"
+        }
+      ]
+    },
+    {
+      "id": "extract-variable",
+      "title": "Extract Variable",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Put a complex expression's result in a variable whose name explains it.",
+      "related": [
+        "comments"
+      ],
+      "links": [
+        {
+          "label": "Extract Variable on refactoring.guru",
+          "url": "https://refactoring.guru/extract-variable"
+        }
+      ]
+    },
+    {
+      "id": "inline-temp",
+      "title": "Inline Temp",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Replace a temporary variable that holds a simple expression with the expression itself.",
+      "related": [],
+      "links": [
+        {
+          "label": "Inline Temp on refactoring.guru",
+          "url": "https://refactoring.guru/inline-temp"
+        }
+      ]
+    },
+    {
+      "id": "replace-temp-with-query",
+      "title": "Replace Temp with Query",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Move an expression stored in a temp into a method and call it instead.",
+      "related": [
+        "long-method"
+      ],
+      "links": [
+        {
+          "label": "Replace Temp with Query on refactoring.guru",
+          "url": "https://refactoring.guru/replace-temp-with-query"
+        }
+      ]
+    },
+    {
+      "id": "split-temporary-variable",
+      "title": "Split Temporary Variable",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Use separate variables when one temp is reused for different values.",
+      "related": [],
+      "links": [
+        {
+          "label": "Split Temporary Variable on refactoring.guru",
+          "url": "https://refactoring.guru/split-temporary-variable"
+        }
+      ]
+    },
+    {
+      "id": "remove-assignments-to-parameters",
+      "title": "Remove Assignments to Parameters",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Assign to a local variable instead of reassigning a parameter.",
+      "related": [],
+      "links": [
+        {
+          "label": "Remove Assignments to Parameters on refactoring.guru",
+          "url": "https://refactoring.guru/remove-assignments-to-parameters"
+        }
+      ]
+    },
+    {
+      "id": "replace-method-with-method-object",
+      "title": "Replace Method with Method Object",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Turn a long method with tangled locals into its own class so you can split it.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Method with Method Object on refactoring.guru",
+          "url": "https://refactoring.guru/replace-method-with-method-object"
+        }
+      ]
+    },
+    {
+      "id": "substitute-algorithm",
+      "title": "Substitute Algorithm",
+      "category": "Refactoring Techniques",
+      "group": "Composing Methods",
+      "summary": "Replace an algorithm with a clearer or simpler one that gives the same result.",
+      "related": [
+        "duplicate-code"
+      ],
+      "links": [
+        {
+          "label": "Substitute Algorithm on refactoring.guru",
+          "url": "https://refactoring.guru/substitute-algorithm"
+        }
+      ]
+    },
+    {
+      "id": "move-method",
+      "title": "Move Method",
+      "category": "Refactoring Techniques",
+      "group": "Moving Features between Objects",
+      "summary": "Move a method to the class that uses it most.",
+      "related": [
+        "alternative-classes-with-different-interfaces",
+        "parallel-inheritance-hierarchies",
+        "shotgun-surgery",
+        "data-class",
+        "feature-envy",
+        "inappropriate-intimacy",
+        "message-chains"
+      ],
+      "links": [
+        {
+          "label": "Move Method on refactoring.guru",
+          "url": "https://refactoring.guru/move-method"
+        }
+      ]
+    },
+    {
+      "id": "move-field",
+      "title": "Move Field",
+      "category": "Refactoring Techniques",
+      "group": "Moving Features between Objects",
+      "summary": "Move a field to the class that uses it most.",
+      "related": [
+        "parallel-inheritance-hierarchies",
+        "shotgun-surgery",
+        "inappropriate-intimacy"
+      ],
+      "links": [
+        {
+          "label": "Move Field on refactoring.guru",
+          "url": "https://refactoring.guru/move-field"
+        }
+      ]
+    },
+    {
+      "id": "extract-class",
+      "title": "Extract Class",
+      "category": "Refactoring Techniques",
+      "group": "Moving Features between Objects",
+      "summary": "Split part of a class's responsibilities into a new class.",
+      "related": [
+        "large-class",
+        "data-clumps",
+        "temporary-field",
+        "divergent-change"
+      ],
+      "links": [
+        {
+          "label": "Extract Class on refactoring.guru",
+          "url": "https://refactoring.guru/extract-class"
+        }
+      ]
+    },
+    {
+      "id": "inline-class",
+      "title": "Inline Class",
+      "category": "Refactoring Techniques",
+      "group": "Moving Features between Objects",
+      "summary": "Fold a class that does too little into another class.",
+      "related": [
+        "shotgun-surgery",
+        "dead-code",
+        "lazy-class",
+        "speculative-generality"
+      ],
+      "links": [
+        {
+          "label": "Inline Class on refactoring.guru",
+          "url": "https://refactoring.guru/inline-class"
+        }
+      ]
+    },
+    {
+      "id": "hide-delegate",
+      "title": "Hide Delegate",
+      "category": "Refactoring Techniques",
+      "group": "Moving Features between Objects",
+      "summary": "Add a method on the server that hides the delegate, so clients don't chain through it.",
+      "related": [
+        "inappropriate-intimacy",
+        "message-chains"
+      ],
+      "links": [
+        {
+          "label": "Hide Delegate on refactoring.guru",
+          "url": "https://refactoring.guru/hide-delegate"
+        }
+      ]
+    },
+    {
+      "id": "remove-middle-man",
+      "title": "Remove Middle Man",
+      "category": "Refactoring Techniques",
+      "group": "Moving Features between Objects",
+      "summary": "Let clients call the delegate directly when a class only forwards calls.",
+      "related": [
+        "middle-man"
+      ],
+      "links": [
+        {
+          "label": "Remove Middle Man on refactoring.guru",
+          "url": "https://refactoring.guru/remove-middle-man"
+        }
+      ]
+    },
+    {
+      "id": "introduce-foreign-method",
+      "title": "Introduce Foreign Method",
+      "category": "Refactoring Techniques",
+      "group": "Moving Features between Objects",
+      "summary": "Add a helper in the client (taking the library object as an argument) for a missing library method.",
+      "related": [
+        "incomplete-library-class"
+      ],
+      "links": [
+        {
+          "label": "Introduce Foreign Method on refactoring.guru",
+          "url": "https://refactoring.guru/introduce-foreign-method"
+        }
+      ]
+    },
+    {
+      "id": "introduce-local-extension",
+      "title": "Introduce Local Extension",
+      "category": "Refactoring Techniques",
+      "group": "Moving Features between Objects",
+      "summary": "Create a subclass or wrapper of a library class that adds the methods you need.",
+      "related": [
+        "incomplete-library-class"
+      ],
+      "links": [
+        {
+          "label": "Introduce Local Extension on refactoring.guru",
+          "url": "https://refactoring.guru/introduce-local-extension"
+        }
+      ]
+    },
+    {
+      "id": "change-value-to-reference",
+      "title": "Change Value to Reference",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Replace many identical value copies with a single shared reference object.",
+      "related": [],
+      "links": [
+        {
+          "label": "Change Value to Reference on refactoring.guru",
+          "url": "https://refactoring.guru/change-value-to-reference"
+        }
+      ]
+    },
+    {
+      "id": "change-reference-to-value",
+      "title": "Change Reference to Value",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Turn a small, rarely-changed reference object into an immutable value object.",
+      "related": [],
+      "links": [
+        {
+          "label": "Change Reference to Value on refactoring.guru",
+          "url": "https://refactoring.guru/change-reference-to-value"
+        }
+      ]
+    },
+    {
+      "id": "duplicate-observed-data",
+      "title": "Duplicate Observed Data",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Separate domain data from UI classes and keep them in sync via observers.",
+      "related": [],
+      "links": [
+        {
+          "label": "Duplicate Observed Data on refactoring.guru",
+          "url": "https://refactoring.guru/duplicate-observed-data"
+        }
+      ]
+    },
+    {
+      "id": "self-encapsulate-field",
+      "title": "Self Encapsulate Field",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Access a field through getters/setters even inside its own class.",
+      "related": [],
+      "links": [
+        {
+          "label": "Self Encapsulate Field on refactoring.guru",
+          "url": "https://refactoring.guru/self-encapsulate-field"
+        }
+      ]
+    },
+    {
+      "id": "replace-data-value-with-object",
+      "title": "Replace Data Value with Object",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Turn a primitive field with behaviour into its own object.",
+      "related": [
+        "primitive-obsession"
+      ],
+      "links": [
+        {
+          "label": "Replace Data Value with Object on refactoring.guru",
+          "url": "https://refactoring.guru/replace-data-value-with-object"
+        }
+      ]
+    },
+    {
+      "id": "replace-array-with-object",
+      "title": "Replace Array with Object",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Replace an array holding different kinds of data with an object with named fields.",
+      "related": [
+        "primitive-obsession"
+      ],
+      "links": [
+        {
+          "label": "Replace Array with Object on refactoring.guru",
+          "url": "https://refactoring.guru/replace-array-with-object"
+        }
+      ]
+    },
+    {
+      "id": "change-unidirectional-association-to-bidirectional",
+      "title": "Change Unidirectional Association to Bidirectional",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Add a back-reference when both classes need to navigate to each other.",
+      "related": [],
+      "links": [
+        {
+          "label": "Change Unidirectional Association to Bidirectional on refactoring.guru",
+          "url": "https://refactoring.guru/change-unidirectional-association-to-bidirectional"
+        }
+      ]
+    },
+    {
+      "id": "change-bidirectional-association-to-unidirectional",
+      "title": "Change Bidirectional Association to Unidirectional",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Remove a back-reference that one side no longer needs.",
+      "related": [
+        "inappropriate-intimacy"
+      ],
+      "links": [
+        {
+          "label": "Change Bidirectional Association to Unidirectional on refactoring.guru",
+          "url": "https://refactoring.guru/change-bidirectional-association-to-unidirectional"
+        }
+      ]
+    },
+    {
+      "id": "encapsulate-field",
+      "title": "Encapsulate Field",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Make a public field private and add accessors.",
+      "related": [
+        "data-class"
+      ],
+      "links": [
+        {
+          "label": "Encapsulate Field on refactoring.guru",
+          "url": "https://refactoring.guru/encapsulate-field"
+        }
+      ]
+    },
+    {
+      "id": "encapsulate-collection",
+      "title": "Encapsulate Collection",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Return a read-only view of a collection and add add/remove methods.",
+      "related": [
+        "data-class"
+      ],
+      "links": [
+        {
+          "label": "Encapsulate Collection on refactoring.guru",
+          "url": "https://refactoring.guru/encapsulate-collection"
+        }
+      ]
+    },
+    {
+      "id": "replace-magic-number-with-symbolic-constant",
+      "title": "Replace Magic Number with Symbolic Constant",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Name unexplained literals with a constant.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Magic Number with Symbolic Constant on refactoring.guru",
+          "url": "https://refactoring.guru/replace-magic-number-with-symbolic-constant"
+        }
+      ]
+    },
+    {
+      "id": "replace-type-code-with-class",
+      "title": "Replace Type Code with Class",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Replace a type-code primitive with a class (or enum) so values are type-checked.",
+      "related": [
+        "primitive-obsession"
+      ],
+      "links": [
+        {
+          "label": "Replace Type Code with Class on refactoring.guru",
+          "url": "https://refactoring.guru/replace-type-code-with-class"
+        }
+      ]
+    },
+    {
+      "id": "replace-type-code-with-subclasses",
+      "title": "Replace Type Code with Subclasses",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Use subclasses when a type code changes behaviour.",
+      "related": [
+        "switch-statements"
+      ],
+      "links": [
+        {
+          "label": "Replace Type Code with Subclasses on refactoring.guru",
+          "url": "https://refactoring.guru/replace-type-code-with-subclasses"
+        }
+      ]
+    },
+    {
+      "id": "replace-type-code-with-state-strategy",
+      "title": "Replace Type Code with State/Strategy",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Use state/strategy objects when the type code can change at runtime.",
+      "related": [
+        "switch-statements"
+      ],
+      "links": [
+        {
+          "label": "Replace Type Code with State/Strategy on refactoring.guru",
+          "url": "https://refactoring.guru/replace-type-code-with-state-strategy"
+        }
+      ]
+    },
+    {
+      "id": "replace-subclass-with-fields",
+      "title": "Replace Subclass with Fields",
+      "category": "Refactoring Techniques",
+      "group": "Organizing Data",
+      "summary": "Collapse subclasses that only differ in constant-returning methods into fields.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Subclass with Fields on refactoring.guru",
+          "url": "https://refactoring.guru/replace-subclass-with-fields"
+        }
+      ]
+    },
+    {
+      "id": "consolidate-conditional-expression",
+      "title": "Consolidate Conditional Expression",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Conditional Expressions",
+      "summary": "Combine several conditions that lead to the same result into one well-named check.",
+      "related": [],
+      "links": [
+        {
+          "label": "Consolidate Conditional Expression on refactoring.guru",
+          "url": "https://refactoring.guru/consolidate-conditional-expression"
+        }
+      ]
+    },
+    {
+      "id": "consolidate-duplicate-conditional-fragments",
+      "title": "Consolidate Duplicate Conditional Fragments",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Conditional Expressions",
+      "summary": "Move code duplicated in every branch outside the conditional.",
+      "related": [],
+      "links": [
+        {
+          "label": "Consolidate Duplicate Conditional Fragments on refactoring.guru",
+          "url": "https://refactoring.guru/consolidate-duplicate-conditional-fragments"
+        }
+      ]
+    },
+    {
+      "id": "decompose-conditional",
+      "title": "Decompose Conditional",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Conditional Expressions",
+      "summary": "Extract a complicated condition and its branches into well-named methods.",
+      "related": [
+        "long-method"
+      ],
+      "links": [
+        {
+          "label": "Decompose Conditional on refactoring.guru",
+          "url": "https://refactoring.guru/decompose-conditional"
+        }
+      ]
+    },
+    {
+      "id": "replace-conditional-with-polymorphism",
+      "title": "Replace Conditional with Polymorphism",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Conditional Expressions",
+      "summary": "Move each branch of a type-based conditional into an overriding method.",
+      "related": [
+        "switch-statements"
+      ],
+      "links": [
+        {
+          "label": "Replace Conditional with Polymorphism on refactoring.guru",
+          "url": "https://refactoring.guru/replace-conditional-with-polymorphism"
+        }
+      ]
+    },
+    {
+      "id": "remove-control-flag",
+      "title": "Remove Control Flag",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Conditional Expressions",
+      "summary": "Use break/continue/return instead of a boolean variable that controls a loop.",
+      "related": [],
+      "links": [
+        {
+          "label": "Remove Control Flag on refactoring.guru",
+          "url": "https://refactoring.guru/remove-control-flag"
+        }
+      ]
+    },
+    {
+      "id": "replace-nested-conditional-with-guard-clauses",
+      "title": "Replace Nested Conditional with Guard Clauses",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Conditional Expressions",
+      "summary": "Handle special cases early and return, flattening the happy path.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Nested Conditional with Guard Clauses on refactoring.guru",
+          "url": "https://refactoring.guru/replace-nested-conditional-with-guard-clauses"
+        }
+      ]
+    },
+    {
+      "id": "introduce-null-object",
+      "title": "Introduce Null Object",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Conditional Expressions",
+      "summary": "Return an object with do-nothing behaviour instead of null to remove null checks.",
+      "related": [
+        "temporary-field"
+      ],
+      "links": [
+        {
+          "label": "Introduce Null Object on refactoring.guru",
+          "url": "https://refactoring.guru/introduce-null-object"
+        }
+      ]
+    },
+    {
+      "id": "introduce-assertion",
+      "title": "Introduce Assertion",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Conditional Expressions",
+      "summary": "Make an assumption explicit with an assertion.",
+      "related": [
+        "comments"
+      ],
+      "links": [
+        {
+          "label": "Introduce Assertion on refactoring.guru",
+          "url": "https://refactoring.guru/introduce-assertion"
+        }
+      ]
+    },
+    {
+      "id": "add-parameter",
+      "title": "Add Parameter",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Give a method the extra data it needs as a parameter.",
+      "related": [],
+      "links": [
+        {
+          "label": "Add Parameter on refactoring.guru",
+          "url": "https://refactoring.guru/add-parameter"
+        }
+      ]
+    },
+    {
+      "id": "remove-parameter",
+      "title": "Remove Parameter",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Delete a parameter the method no longer uses.",
+      "related": [
+        "dead-code",
+        "speculative-generality"
+      ],
+      "links": [
+        {
+          "label": "Remove Parameter on refactoring.guru",
+          "url": "https://refactoring.guru/remove-parameter"
+        }
+      ]
+    },
+    {
+      "id": "rename-method",
+      "title": "Rename Method",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Rename a method so its name says what it does.",
+      "related": [
+        "alternative-classes-with-different-interfaces",
+        "comments"
+      ],
+      "links": [
+        {
+          "label": "Rename Method on refactoring.guru",
+          "url": "https://refactoring.guru/rename-method"
+        }
+      ]
+    },
+    {
+      "id": "separate-query-from-modifier",
+      "title": "Separate Query from Modifier",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Split a method that both returns a value and changes state into two.",
+      "related": [],
+      "links": [
+        {
+          "label": "Separate Query from Modifier on refactoring.guru",
+          "url": "https://refactoring.guru/separate-query-from-modifier"
+        }
+      ]
+    },
+    {
+      "id": "parameterize-method",
+      "title": "Parameterize Method",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Merge similar methods that differ only by a value into one method with a parameter.",
+      "related": [],
+      "links": [
+        {
+          "label": "Parameterize Method on refactoring.guru",
+          "url": "https://refactoring.guru/parameterize-method"
+        }
+      ]
+    },
+    {
+      "id": "introduce-parameter-object",
+      "title": "Introduce Parameter Object",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Replace a recurring group of parameters with one object.",
+      "related": [
+        "long-method",
+        "primitive-obsession",
+        "long-parameter-list",
+        "data-clumps"
+      ],
+      "links": [
+        {
+          "label": "Introduce Parameter Object on refactoring.guru",
+          "url": "https://refactoring.guru/introduce-parameter-object"
+        }
+      ]
+    },
+    {
+      "id": "preserve-whole-object",
+      "title": "Preserve Whole Object",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Pass the whole object instead of several values pulled from it.",
+      "related": [
+        "long-parameter-list",
+        "data-clumps"
+      ],
+      "links": [
+        {
+          "label": "Preserve Whole Object on refactoring.guru",
+          "url": "https://refactoring.guru/preserve-whole-object"
+        }
+      ]
+    },
+    {
+      "id": "remove-setting-method",
+      "title": "Remove Setting Method",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Remove a setter for a field that should only be set at creation.",
+      "related": [],
+      "links": [
+        {
+          "label": "Remove Setting Method on refactoring.guru",
+          "url": "https://refactoring.guru/remove-setting-method"
+        }
+      ]
+    },
+    {
+      "id": "replace-parameter-with-explicit-methods",
+      "title": "Replace Parameter with Explicit Methods",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Split a method that switches on a parameter into one method per case.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Parameter with Explicit Methods on refactoring.guru",
+          "url": "https://refactoring.guru/replace-parameter-with-explicit-methods"
+        }
+      ]
+    },
+    {
+      "id": "replace-parameter-with-method-call",
+      "title": "Replace Parameter with Method Call",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Let the method obtain a value itself instead of receiving it as a parameter.",
+      "related": [
+        "long-parameter-list"
+      ],
+      "links": [
+        {
+          "label": "Replace Parameter with Method Call on refactoring.guru",
+          "url": "https://refactoring.guru/replace-parameter-with-method-call"
+        }
+      ]
+    },
+    {
+      "id": "hide-method",
+      "title": "Hide Method",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Make a method private (or protected) when nothing outside uses it.",
+      "related": [],
+      "links": [
+        {
+          "label": "Hide Method on refactoring.guru",
+          "url": "https://refactoring.guru/hide-method"
+        }
+      ]
+    },
+    {
+      "id": "replace-constructor-with-factory-method",
+      "title": "Replace Constructor with Factory Method",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Use a static/named factory when construction needs more than a plain constructor.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Constructor with Factory Method on refactoring.guru",
+          "url": "https://refactoring.guru/replace-constructor-with-factory-method"
+        }
+      ]
+    },
+    {
+      "id": "replace-error-code-with-exception",
+      "title": "Replace Error Code with Exception",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Throw an exception instead of returning a special error value.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Error Code with Exception on refactoring.guru",
+          "url": "https://refactoring.guru/replace-error-code-with-exception"
+        }
+      ]
+    },
+    {
+      "id": "replace-exception-with-test",
+      "title": "Replace Exception with Test",
+      "category": "Refactoring Techniques",
+      "group": "Simplifying Method Calls",
+      "summary": "Check a condition up front instead of relying on catching an exception.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Exception with Test on refactoring.guru",
+          "url": "https://refactoring.guru/replace-exception-with-test"
+        }
+      ]
+    },
+    {
+      "id": "pull-up-field",
+      "title": "Pull Up Field",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Move a field shared by subclasses into the superclass.",
+      "related": [],
+      "links": [
+        {
+          "label": "Pull Up Field on refactoring.guru",
+          "url": "https://refactoring.guru/pull-up-field"
+        }
+      ]
+    },
+    {
+      "id": "pull-up-method",
+      "title": "Pull Up Method",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Move identical subclass methods into the superclass.",
+      "related": [
+        "duplicate-code"
+      ],
+      "links": [
+        {
+          "label": "Pull Up Method on refactoring.guru",
+          "url": "https://refactoring.guru/pull-up-method"
+        }
+      ]
+    },
+    {
+      "id": "pull-up-constructor-body",
+      "title": "Pull Up Constructor Body",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Move shared constructor code into the superclass constructor.",
+      "related": [],
+      "links": [
+        {
+          "label": "Pull Up Constructor Body on refactoring.guru",
+          "url": "https://refactoring.guru/pull-up-constructor-body"
+        }
+      ]
+    },
+    {
+      "id": "push-down-field",
+      "title": "Push Down Field",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Move a field used by only some subclasses down into them.",
+      "related": [],
+      "links": [
+        {
+          "label": "Push Down Field on refactoring.guru",
+          "url": "https://refactoring.guru/push-down-field"
+        }
+      ]
+    },
+    {
+      "id": "push-down-method",
+      "title": "Push Down Method",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Move a method used by only some subclasses down into them.",
+      "related": [
+        "refused-bequest"
+      ],
+      "links": [
+        {
+          "label": "Push Down Method on refactoring.guru",
+          "url": "https://refactoring.guru/push-down-method"
+        }
+      ]
+    },
+    {
+      "id": "extract-subclass",
+      "title": "Extract Subclass",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Create a subclass for features used only in some instances.",
+      "related": [
+        "large-class"
+      ],
+      "links": [
+        {
+          "label": "Extract Subclass on refactoring.guru",
+          "url": "https://refactoring.guru/extract-subclass"
+        }
+      ]
+    },
+    {
+      "id": "extract-superclass",
+      "title": "Extract Superclass",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Move common features of two classes into a new parent class.",
+      "related": [
+        "alternative-classes-with-different-interfaces",
+        "refused-bequest"
+      ],
+      "links": [
+        {
+          "label": "Extract Superclass on refactoring.guru",
+          "url": "https://refactoring.guru/extract-superclass"
+        }
+      ]
+    },
+    {
+      "id": "extract-interface",
+      "title": "Extract Interface",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Pull a shared subset of methods into an interface.",
+      "related": [
+        "large-class"
+      ],
+      "links": [
+        {
+          "label": "Extract Interface on refactoring.guru",
+          "url": "https://refactoring.guru/extract-interface"
+        }
+      ]
+    },
+    {
+      "id": "collapse-hierarchy",
+      "title": "Collapse Hierarchy",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Merge a subclass into its parent when they're practically the same.",
+      "related": [
+        "lazy-class",
+        "speculative-generality"
+      ],
+      "links": [
+        {
+          "label": "Collapse Hierarchy on refactoring.guru",
+          "url": "https://refactoring.guru/collapse-hierarchy"
+        }
+      ]
+    },
+    {
+      "id": "form-template-method",
+      "title": "Form Template Method",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Turn similar algorithms in subclasses into a template method in the parent.",
+      "related": [
+        "duplicate-code"
+      ],
+      "links": [
+        {
+          "label": "Form Template Method on refactoring.guru",
+          "url": "https://refactoring.guru/form-template-method"
+        }
+      ]
+    },
+    {
+      "id": "replace-inheritance-with-delegation",
+      "title": "Replace Inheritance with Delegation",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Hold the former parent in a field and delegate, instead of inheriting from it.",
+      "related": [
+        "refused-bequest"
+      ],
+      "links": [
+        {
+          "label": "Replace Inheritance with Delegation on refactoring.guru",
+          "url": "https://refactoring.guru/replace-inheritance-with-delegation"
+        }
+      ]
+    },
+    {
+      "id": "replace-delegation-with-inheritance",
+      "title": "Replace Delegation with Inheritance",
+      "category": "Refactoring Techniques",
+      "group": "Dealing with Generalization",
+      "summary": "Inherit when a class delegates nearly everything to another.",
+      "related": [],
+      "links": [
+        {
+          "label": "Replace Delegation with Inheritance on refactoring.guru",
+          "url": "https://refactoring.guru/replace-delegation-with-inheritance"
+        }
+      ]
+    }
+  ]
+}

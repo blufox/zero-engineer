@@ -1,0 +1,512 @@
+{
+  "id": "code-smells",
+  "title": "Code Smells",
+  "description": "Signs that code may need refactoring, grouped as on refactoring.guru. Each lists typical refactorings to apply.",
+  "groups": [
+    "Bloaters",
+    "Object-Orientation Abusers",
+    "Change Preventers",
+    "Dispensables",
+    "Couplers"
+  ],
+  "source": {
+    "name": "refactoring.guru",
+    "url": "https://refactoring.guru/refactoring/smells"
+  },
+  "entries": [
+    {
+      "id": "long-method",
+      "title": "Long Method",
+      "category": "Code Smells",
+      "group": "Bloaters",
+      "summary": "A method has grown so long it's hard to understand, test or reuse.",
+      "signs": [
+        "You scroll to read it",
+        "Comments separate 'sections' inside it",
+        "Many local variables"
+      ],
+      "related": [
+        "extract-method",
+        "replace-temp-with-query",
+        "introduce-parameter-object",
+        "decompose-conditional"
+      ],
+      "links": [
+        {
+          "label": "Long Method on refactoring.guru",
+          "url": "https://refactoring.guru/smells/long-method"
+        }
+      ]
+    },
+    {
+      "id": "large-class",
+      "title": "Large Class",
+      "category": "Code Smells",
+      "group": "Bloaters",
+      "summary": "A class tries to do too much: too many fields, methods and responsibilities.",
+      "signs": [
+        "Many unrelated fields",
+        "Methods cluster into separate groups",
+        "Frequent merge conflicts in one file"
+      ],
+      "related": [
+        "extract-class",
+        "extract-subclass",
+        "extract-interface"
+      ],
+      "links": [
+        {
+          "label": "Large Class on refactoring.guru",
+          "url": "https://refactoring.guru/smells/large-class"
+        }
+      ]
+    },
+    {
+      "id": "primitive-obsession",
+      "title": "Primitive Obsession",
+      "category": "Code Smells",
+      "group": "Bloaters",
+      "summary": "Domain concepts (money, email, phone, status) are passed around as raw strings and numbers.",
+      "signs": [
+        "Validation of the same value repeated everywhere",
+        "Constants used as type codes",
+        "Arrays used as records"
+      ],
+      "related": [
+        "replace-data-value-with-object",
+        "replace-type-code-with-class",
+        "replace-array-with-object",
+        "introduce-parameter-object"
+      ],
+      "links": [
+        {
+          "label": "Primitive Obsession on refactoring.guru",
+          "url": "https://refactoring.guru/smells/primitive-obsession"
+        }
+      ]
+    },
+    {
+      "id": "long-parameter-list",
+      "title": "Long Parameter List",
+      "category": "Code Smells",
+      "group": "Bloaters",
+      "summary": "A method takes so many parameters that calls are hard to read and easy to get wrong.",
+      "signs": [
+        "More than 3–4 parameters",
+        "Boolean flag arguments",
+        "The same group of args appears in many calls"
+      ],
+      "related": [
+        "introduce-parameter-object",
+        "preserve-whole-object",
+        "replace-parameter-with-method-call"
+      ],
+      "links": [
+        {
+          "label": "Long Parameter List on refactoring.guru",
+          "url": "https://refactoring.guru/smells/long-parameter-list"
+        }
+      ]
+    },
+    {
+      "id": "data-clumps",
+      "title": "Data Clumps",
+      "category": "Code Smells",
+      "group": "Bloaters",
+      "summary": "The same group of values always travels together (start/end dates, lat/lng, street/city/zip).",
+      "signs": [
+        "Identical parameter groups across methods",
+        "Fields that are only meaningful together"
+      ],
+      "related": [
+        "extract-class",
+        "introduce-parameter-object",
+        "preserve-whole-object"
+      ],
+      "links": [
+        {
+          "label": "Data Clumps on refactoring.guru",
+          "url": "https://refactoring.guru/smells/data-clumps"
+        }
+      ]
+    },
+    {
+      "id": "alternative-classes-with-different-interfaces",
+      "title": "Alternative Classes with Different Interfaces",
+      "category": "Code Smells",
+      "group": "Object-Orientation Abusers",
+      "summary": "Two classes do the same job but expose different method names.",
+      "signs": [
+        "Callers need adapters or conditionals to use either"
+      ],
+      "related": [
+        "rename-method",
+        "move-method",
+        "extract-superclass"
+      ],
+      "links": [
+        {
+          "label": "Alternative Classes with Different Interfaces on refactoring.guru",
+          "url": "https://refactoring.guru/smells/alternative-classes-with-different-interfaces"
+        }
+      ]
+    },
+    {
+      "id": "refused-bequest",
+      "title": "Refused Bequest",
+      "category": "Code Smells",
+      "group": "Object-Orientation Abusers",
+      "summary": "A subclass inherits methods or data it doesn't want, overriding them to do nothing or throw.",
+      "signs": [
+        "Overrides that throw 'not supported'",
+        "Inheritance used only to reuse code"
+      ],
+      "related": [
+        "replace-inheritance-with-delegation",
+        "extract-superclass",
+        "push-down-method"
+      ],
+      "links": [
+        {
+          "label": "Refused Bequest on refactoring.guru",
+          "url": "https://refactoring.guru/smells/refused-bequest"
+        }
+      ]
+    },
+    {
+      "id": "switch-statements",
+      "title": "Switch Statements",
+      "category": "Code Smells",
+      "group": "Object-Orientation Abusers",
+      "summary": "The same `switch`/`match`/if-chain on a type code appears in several places.",
+      "signs": [
+        "Adding a type means editing many switches"
+      ],
+      "related": [
+        "replace-conditional-with-polymorphism",
+        "replace-type-code-with-subclasses",
+        "replace-type-code-with-state-strategy"
+      ],
+      "links": [
+        {
+          "label": "Switch Statements on refactoring.guru",
+          "url": "https://refactoring.guru/smells/switch-statements"
+        }
+      ]
+    },
+    {
+      "id": "temporary-field",
+      "title": "Temporary Field",
+      "category": "Code Smells",
+      "group": "Object-Orientation Abusers",
+      "summary": "A field is only set and used in certain situations and is empty the rest of the time.",
+      "signs": [
+        "Nullable fields used by one algorithm",
+        "Checks for 'is this set yet?'"
+      ],
+      "related": [
+        "extract-class",
+        "introduce-null-object"
+      ],
+      "links": [
+        {
+          "label": "Temporary Field on refactoring.guru",
+          "url": "https://refactoring.guru/smells/temporary-field"
+        }
+      ]
+    },
+    {
+      "id": "divergent-change",
+      "title": "Divergent Change",
+      "category": "Code Smells",
+      "group": "Change Preventers",
+      "summary": "One class has to be edited for many unrelated reasons.",
+      "signs": [
+        "'To add a payment method I edit this class... and also to change reporting'"
+      ],
+      "related": [
+        "extract-class"
+      ],
+      "links": [
+        {
+          "label": "Divergent Change on refactoring.guru",
+          "url": "https://refactoring.guru/smells/divergent-change"
+        }
+      ]
+    },
+    {
+      "id": "parallel-inheritance-hierarchies",
+      "title": "Parallel Inheritance Hierarchies",
+      "category": "Code Smells",
+      "group": "Change Preventers",
+      "summary": "Every time you add a subclass in one hierarchy, you must add one in another.",
+      "signs": [
+        "Matching class-name prefixes across two trees"
+      ],
+      "related": [
+        "move-method",
+        "move-field"
+      ],
+      "links": [
+        {
+          "label": "Parallel Inheritance Hierarchies on refactoring.guru",
+          "url": "https://refactoring.guru/smells/parallel-inheritance-hierarchies"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-surgery",
+      "title": "Shotgun Surgery",
+      "category": "Code Smells",
+      "group": "Change Preventers",
+      "summary": "One logical change requires many small edits across many classes.",
+      "signs": [
+        "A small feature touches 10 files"
+      ],
+      "related": [
+        "move-method",
+        "move-field",
+        "inline-class"
+      ],
+      "links": [
+        {
+          "label": "Shotgun Surgery on refactoring.guru",
+          "url": "https://refactoring.guru/smells/shotgun-surgery"
+        }
+      ]
+    },
+    {
+      "id": "comments",
+      "title": "Comments",
+      "category": "Code Smells",
+      "group": "Dispensables",
+      "summary": "Comments explain what confusing code does, instead of the code explaining itself.",
+      "signs": [
+        "Comments describing *what*, not *why*"
+      ],
+      "related": [
+        "extract-variable",
+        "extract-method",
+        "rename-method",
+        "introduce-assertion"
+      ],
+      "links": [
+        {
+          "label": "Comments on refactoring.guru",
+          "url": "https://refactoring.guru/smells/comments"
+        }
+      ]
+    },
+    {
+      "id": "duplicate-code",
+      "title": "Duplicate Code",
+      "category": "Code Smells",
+      "group": "Dispensables",
+      "summary": "The same or very similar code exists in more than one place.",
+      "signs": [
+        "Copy-pasted blocks with small tweaks"
+      ],
+      "related": [
+        "extract-method",
+        "pull-up-method",
+        "form-template-method",
+        "substitute-algorithm"
+      ],
+      "links": [
+        {
+          "label": "Duplicate Code on refactoring.guru",
+          "url": "https://refactoring.guru/smells/duplicate-code"
+        }
+      ]
+    },
+    {
+      "id": "data-class",
+      "title": "Data Class",
+      "category": "Code Smells",
+      "group": "Dispensables",
+      "summary": "A class only holds fields with getters/setters, while the behaviour using that data lives elsewhere.",
+      "signs": [
+        "Logic about the data is in services that 'envy' it"
+      ],
+      "related": [
+        "encapsulate-field",
+        "encapsulate-collection",
+        "move-method"
+      ],
+      "links": [
+        {
+          "label": "Data Class on refactoring.guru",
+          "url": "https://refactoring.guru/smells/data-class"
+        }
+      ]
+    },
+    {
+      "id": "dead-code",
+      "title": "Dead Code",
+      "category": "Code Smells",
+      "group": "Dispensables",
+      "summary": "Variables, parameters, methods or classes that are never used.",
+      "signs": [
+        "Unreachable branches",
+        "Unused imports/params"
+      ],
+      "related": [
+        "inline-class",
+        "remove-parameter"
+      ],
+      "links": [
+        {
+          "label": "Dead Code on refactoring.guru",
+          "url": "https://refactoring.guru/smells/dead-code"
+        }
+      ]
+    },
+    {
+      "id": "lazy-class",
+      "title": "Lazy Class",
+      "category": "Code Smells",
+      "group": "Dispensables",
+      "summary": "A class does so little that it isn't worth the cost of understanding it.",
+      "signs": [
+        "A class that only delegates or wraps one call"
+      ],
+      "related": [
+        "inline-class",
+        "collapse-hierarchy"
+      ],
+      "links": [
+        {
+          "label": "Lazy Class on refactoring.guru",
+          "url": "https://refactoring.guru/smells/lazy-class"
+        }
+      ]
+    },
+    {
+      "id": "speculative-generality",
+      "title": "Speculative Generality",
+      "category": "Code Smells",
+      "group": "Dispensables",
+      "summary": "Unused abstractions, hooks and parameters added 'just in case'.",
+      "signs": [
+        "Abstract classes with one subclass",
+        "Unused parameters"
+      ],
+      "related": [
+        "collapse-hierarchy",
+        "inline-class",
+        "inline-method",
+        "remove-parameter"
+      ],
+      "links": [
+        {
+          "label": "Speculative Generality on refactoring.guru",
+          "url": "https://refactoring.guru/smells/speculative-generality"
+        }
+      ]
+    },
+    {
+      "id": "feature-envy",
+      "title": "Feature Envy",
+      "category": "Code Smells",
+      "group": "Couplers",
+      "summary": "A method uses another object's data more than its own.",
+      "signs": [
+        "Long chains of getters on another object"
+      ],
+      "related": [
+        "move-method",
+        "extract-method"
+      ],
+      "links": [
+        {
+          "label": "Feature Envy on refactoring.guru",
+          "url": "https://refactoring.guru/smells/feature-envy"
+        }
+      ]
+    },
+    {
+      "id": "inappropriate-intimacy",
+      "title": "Inappropriate Intimacy",
+      "category": "Code Smells",
+      "group": "Couplers",
+      "summary": "Two classes know too much about each other's internals.",
+      "signs": [
+        "Accessing each other's private-ish fields",
+        "Bidirectional associations everywhere"
+      ],
+      "related": [
+        "move-method",
+        "move-field",
+        "change-bidirectional-association-to-unidirectional",
+        "hide-delegate"
+      ],
+      "links": [
+        {
+          "label": "Inappropriate Intimacy on refactoring.guru",
+          "url": "https://refactoring.guru/smells/inappropriate-intimacy"
+        }
+      ]
+    },
+    {
+      "id": "incomplete-library-class",
+      "title": "Incomplete Library Class",
+      "category": "Code Smells",
+      "group": "Couplers",
+      "summary": "A library lacks a method you need, and you can't modify it.",
+      "signs": [
+        "Utility helpers wrapping library objects scattered around"
+      ],
+      "related": [
+        "introduce-foreign-method",
+        "introduce-local-extension"
+      ],
+      "links": [
+        {
+          "label": "Incomplete Library Class on refactoring.guru",
+          "url": "https://refactoring.guru/smells/incomplete-library-class"
+        }
+      ]
+    },
+    {
+      "id": "message-chains",
+      "title": "Message Chains",
+      "category": "Code Smells",
+      "group": "Couplers",
+      "summary": "Code navigates long chains like `$a->b()->c()->d()`.",
+      "signs": [
+        "Callers depend on the structure of a whole object graph"
+      ],
+      "related": [
+        "hide-delegate",
+        "extract-method",
+        "move-method"
+      ],
+      "links": [
+        {
+          "label": "Message Chains on refactoring.guru",
+          "url": "https://refactoring.guru/smells/message-chains"
+        }
+      ]
+    },
+    {
+      "id": "middle-man",
+      "title": "Middle Man",
+      "category": "Code Smells",
+      "group": "Couplers",
+      "summary": "A class delegates almost everything to another class and adds nothing.",
+      "signs": [
+        "Most methods are one-line pass-throughs"
+      ],
+      "related": [
+        "remove-middle-man",
+        "inline-method"
+      ],
+      "links": [
+        {
+          "label": "Middle Man on refactoring.guru",
+          "url": "https://refactoring.guru/smells/middle-man"
+        }
+      ]
+    }
+  ]
+}

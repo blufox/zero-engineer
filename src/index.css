@@ -1,0 +1,155 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+/* Dark mode is driven by a `.dark` class on <html> (set from settings). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens. Components use the semantic utilities below
+ * (bg-surface, text-muted, border-line, text-accent ...) rather than raw colours,
+ * so theming happens here only.
+ */
+:root {
+  --c-bg: #f6f6f3;
+  --c-surface: #ffffff;
+  --c-surface-2: #efefea;
+  --c-line: #dededa;
+  --c-text: #1c1c1a;
+  --c-muted: #6b6b66;
+  --c-accent: #2f7a5b;
+  --c-accent-soft: #e2f0e8;
+  --c-danger: #b4392f;
+  --c-warn: #a86b12;
+  /* syntax */
+  --s-keyword: #8a3ab9;
+  --s-string: #2f7a3b;
+  --s-number: #b5560c;
+  --s-comment: #8c8c86;
+  --s-func: #1f5fa8;
+  --s-type: #9a6a00;
+  --s-var: #1c1c1a;
+  --s-prop: #b03a5b;
+  --s-tag: #1f5fa8;
+  color-scheme: light;
+}
+
+:root.dark {
+  --c-bg: #121413;
+  --c-surface: #1a1d1b;
+  --c-surface-2: #222624;
+  --c-line: #2e3330;
+  --c-text: #e6e8e4;
+  --c-muted: #8d948f;
+  --c-accent: #5fd09b;
+  --c-accent-soft: #1d3329;
+  --c-danger: #ef7a6f;
+  --c-warn: #e4b05a;
+  --s-keyword: #c792ea;
+  --s-string: #a5d68a;
+  --s-number: #f2a766;
+  --s-comment: #6b736e;
+  --s-func: #82aaff;
+  --s-type: #e6c07b;
+  --s-var: #e6e8e4;
+  --s-prop: #f07178;
+  --s-tag: #7fc8f8;
+  color-scheme: dark;
+}
+
+/* Accent palettes: [data-accent] on <html>, tuned separately for light and dark. Green is the default above. */
+:root[data-accent="blue"] { --c-accent: #045cb5; --c-accent-soft: #e1ecf8; }
+:root.dark[data-accent="blue"] { --c-accent: #5fa8f5; --c-accent-soft: #16293f; }
+:root[data-accent="violet"] { --c-accent: #6d4fc2; --c-accent-soft: #ece7fa; }
+:root.dark[data-accent="violet"] { --c-accent: #a58cf5; --c-accent-soft: #2a2342; }
+:root[data-accent="teal"] { --c-accent: #0f7680; --c-accent-soft: #dcf0f1; }
+:root.dark[data-accent="teal"] { --c-accent: #4fc8d3; --c-accent-soft: #133238; }
+:root[data-accent="amber"] { --c-accent: #a65f00; --c-accent-soft: #f8ecd9; }
+:root.dark[data-accent="amber"] { --c-accent: #f0b34f; --c-accent-soft: #3a2c14; }
+:root[data-accent="rose"] { --c-accent: #b8325a; --c-accent-soft: #f9e3ea; }
+:root.dark[data-accent="rose"] { --c-accent: #f27a9b; --c-accent-soft: #3d1d28; }
+
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-line: var(--c-line);
+  --color-text: var(--c-text);
+  --color-muted: var(--c-muted);
+  --color-accent: var(--c-accent);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-danger: var(--c-danger);
+  --color-warn: var(--c-warn);
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-sans);
+  font-size: 0.875rem; /* 14px at the default scale; follows the UI size setting */
+  -webkit-font-smoothing: antialiased;
+  user-select: none; /* feels like a native app; re-enabled on content below */
+}
+
+input,
+textarea,
+pre,
+code,
+.selectable {
+  user-select: text;
+}
+
+/* Show code literally: no "<=" -> "≤" or "->" -> arrow ligatures. */
+.font-mono,
+.cm-editor,
+code,
+kbd,
+pre,
+textarea {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+::selection {
+  background: var(--c-accent-soft);
+}
+
+/* Slim scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-line) transparent;
+}
+
+/* In a layer so Tailwind utilities (e.g. focus-visible:outline-none) can override it. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Rendered Markdown (notes) */
+.prose-zero { line-height: 1.65; font-size: 0.875rem; }
+.prose-zero > * + * { margin-top: 0.75em; }
+.prose-zero h1 { font-size: 1.4em; font-weight: 600; }
+.prose-zero h2 { font-size: 1.2em; font-weight: 600; margin-top: 1.2em; }
+.prose-zero h3 { font-size: 1.05em; font-weight: 600; margin-top: 1em; }
+.prose-zero a { color: var(--c-accent); text-decoration: underline; }
+.prose-zero ul { list-style: disc; padding-left: 1.4em; }
+.prose-zero ol { list-style: decimal; padding-left: 1.4em; }
+.prose-zero code { font-family: var(--font-mono); font-size: 0.88em; background: var(--c-surface-2); padding: 0.1em 0.35em; border-radius: 4px; }
+.prose-zero pre { background: var(--c-surface-2); border: 1px solid var(--c-line); padding: 0.8em 1em; border-radius: 6px; overflow-x: auto; }
+.prose-zero pre code { background: none; padding: 0; }
+.prose-zero blockquote { border-left: 3px solid var(--c-line); padding-left: 1em; color: var(--c-muted); }
+.prose-zero table { border-collapse: collapse; }
+.prose-zero th, .prose-zero td { border: 1px solid var(--c-line); padding: 0.3em 0.7em; }
+.prose-zero hr { border-color: var(--c-line); }

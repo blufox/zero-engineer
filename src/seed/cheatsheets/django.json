@@ -1,0 +1,231 @@
+{
+  "id": "django",
+  "title": "Django manage.py",
+  "description": "manage.py commands for everyday Django work, plus Celery/gunicorn/uvicorn. Checked against the Django, Celery, gunicorn and uvicorn docs.",
+  "tags": [
+    "django",
+    "python"
+  ],
+  "sections": [
+    {
+      "title": "Project & apps",
+      "items": [
+        {
+          "keys": [
+            "django-admin startproject mysite ."
+          ],
+          "description": "new project in the current folder"
+        },
+        {
+          "keys": [
+            "python manage.py startapp blog"
+          ],
+          "description": "new app"
+        },
+        {
+          "keys": [
+            "python manage.py runserver 0.0.0.0:8000"
+          ],
+          "description": "start the development server"
+        },
+        {
+          "keys": [
+            "python manage.py shell"
+          ],
+          "description": "Python shell with Django loaded"
+        },
+        {
+          "keys": [
+            "python manage.py check --deploy"
+          ],
+          "description": "system checks (with deployment checks)"
+        },
+        {
+          "keys": [
+            "python manage.py diffsettings"
+          ],
+          "description": "settings that differ from defaults"
+        }
+      ]
+    },
+    {
+      "title": "Database & migrations",
+      "items": [
+        {
+          "keys": [
+            "python manage.py makemigrations [app]"
+          ],
+          "description": "create migrations from model changes"
+        },
+        {
+          "keys": [
+            "python manage.py makemigrations --check"
+          ],
+          "description": "exit non-zero if model changes have no migrations (implies --dry-run; good for CI)"
+        },
+        {
+          "keys": [
+            "python manage.py migrate"
+          ],
+          "description": "apply migrations"
+        },
+        {
+          "keys": [
+            "python manage.py migrate blog 0003"
+          ],
+          "description": "migrate an app to a specific migration (use zero to unapply all of an app's migrations)"
+        },
+        {
+          "keys": [
+            "python manage.py showmigrations"
+          ],
+          "description": "list migrations and whether applied"
+        },
+        {
+          "keys": [
+            "python manage.py sqlmigrate blog 0001"
+          ],
+          "description": "print the SQL for a migration"
+        },
+        {
+          "keys": [
+            "python manage.py squashmigrations blog 0004"
+          ],
+          "description": "squash migrations"
+        },
+        {
+          "keys": [
+            "python manage.py dbshell"
+          ],
+          "description": "open the database client"
+        },
+        {
+          "keys": [
+            "python manage.py inspectdb > models.py"
+          ],
+          "description": "generate models from an existing DB"
+        }
+      ]
+    },
+    {
+      "title": "Data",
+      "items": [
+        {
+          "keys": [
+            "python manage.py dumpdata blog --indent 2 > blog.json"
+          ],
+          "description": "export data as fixtures"
+        },
+        {
+          "keys": [
+            "python manage.py loaddata blog.json"
+          ],
+          "description": "load fixtures"
+        },
+        {
+          "keys": [
+            "python manage.py flush"
+          ],
+          "description": "delete all data (DESTRUCTIVE; the applied-migrations table is kept)"
+        }
+      ]
+    },
+    {
+      "title": "Users",
+      "items": [
+        {
+          "keys": [
+            "python manage.py createsuperuser"
+          ],
+          "description": "create an admin user"
+        },
+        {
+          "keys": [
+            "python manage.py changepassword <username>"
+          ],
+          "description": "change a user's password"
+        }
+      ]
+    },
+    {
+      "title": "Static & i18n",
+      "items": [
+        {
+          "keys": [
+            "python manage.py collectstatic --noinput"
+          ],
+          "description": "collect static files into STATIC_ROOT"
+        },
+        {
+          "keys": [
+            "python manage.py findstatic css/app.css"
+          ],
+          "description": "which file a static path resolves to"
+        },
+        {
+          "keys": [
+            "python manage.py makemessages -l af",
+            "python manage.py compilemessages"
+          ],
+          "description": "extract / compile translations"
+        }
+      ]
+    },
+    {
+      "title": "Testing",
+      "items": [
+        {
+          "keys": [
+            "python manage.py test"
+          ],
+          "description": "run all tests"
+        },
+        {
+          "keys": [
+            "python manage.py test blog.tests.PostTests.test_slug"
+          ],
+          "description": "run one test"
+        },
+        {
+          "keys": [
+            "python manage.py test --parallel --keepdb"
+          ],
+          "description": "faster test runs"
+        }
+      ]
+    },
+    {
+      "title": "Common extras",
+      "items": [
+        {
+          "keys": [
+            "celery -A mysite worker -l INFO"
+          ],
+          "description": "start a Celery worker"
+        },
+        {
+          "keys": [
+            "celery -A mysite beat -l INFO"
+          ],
+          "description": "start the Celery beat scheduler (periodic tasks)"
+        },
+        {
+          "keys": [
+            "gunicorn mysite.wsgi -b 0.0.0.0:8000"
+          ],
+          "description": "serve WSGI with gunicorn (-b/--bind sets the address; default 127.0.0.1:8000)"
+        },
+        {
+          "keys": [
+            "python -m uvicorn mysite.asgi:application --reload"
+          ],
+          "description": "serve ASGI with uvicorn (--reload restarts on file changes; dev only)"
+        }
+      ]
+    }
+  ],
+  "source": {
+    "name": "django-admin and manage.py reference",
+    "url": "https://docs.djangoproject.com/en/stable/ref/django-admin/"
+  }
+}

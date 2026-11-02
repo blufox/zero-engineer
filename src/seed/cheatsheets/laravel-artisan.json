@@ -1,0 +1,329 @@
+{
+  "id": "laravel-artisan",
+  "title": "Laravel Artisan",
+  "description": "php artisan commands for everyday Laravel work. Checked against Laravel 13.x docs and `php artisan help` (Laravel 13.38).",
+  "tags": [
+    "laravel",
+    "php"
+  ],
+  "sections": [
+    {
+      "title": "General",
+      "items": [
+        {
+          "keys": [
+            "php artisan list"
+          ],
+          "description": "list all commands"
+        },
+        {
+          "keys": [
+            "php artisan help <command>"
+          ],
+          "description": "help for a command"
+        },
+        {
+          "keys": [
+            "php artisan about"
+          ],
+          "description": "app, environment and driver overview"
+        },
+        {
+          "keys": [
+            "php artisan serve --port=8000"
+          ],
+          "description": "start the development server"
+        },
+        {
+          "keys": [
+            "php artisan tinker"
+          ],
+          "description": "interactive REPL with the app loaded"
+        },
+        {
+          "keys": [
+            "php artisan down --secret=token",
+            "php artisan up"
+          ],
+          "description": "maintenance mode on / off"
+        }
+      ]
+    },
+    {
+      "title": "Make",
+      "items": [
+        {
+          "keys": [
+            "php artisan make:model Post -mfsc"
+          ],
+          "description": "model with migration, factory, seeder and controller"
+        },
+        {
+          "keys": [
+            "php artisan make:controller PostController --resource"
+          ],
+          "description": "resource controller"
+        },
+        {
+          "keys": [
+            "php artisan make:controller Api/PostController --api"
+          ],
+          "description": "API controller (no create/edit)"
+        },
+        {
+          "keys": [
+            "php artisan make:request StorePostRequest"
+          ],
+          "description": "form request validation class"
+        },
+        {
+          "keys": [
+            "php artisan make:migration create_posts_table"
+          ],
+          "description": "new migration"
+        },
+        {
+          "keys": [
+            "php artisan make:job ProcessPodcast"
+          ],
+          "description": "queued job"
+        },
+        {
+          "keys": [
+            "php artisan make:event",
+            "php artisan make:listener"
+          ],
+          "description": "event / listener"
+        },
+        {
+          "keys": [
+            "php artisan make:policy PostPolicy --model=Post"
+          ],
+          "description": "authorization policy"
+        },
+        {
+          "keys": [
+            "php artisan make:middleware EnsureAdmin"
+          ],
+          "description": "middleware"
+        },
+        {
+          "keys": [
+            "php artisan make:resource PostResource"
+          ],
+          "description": "API resource transformer"
+        },
+        {
+          "keys": [
+            "php artisan make:command SendEmails"
+          ],
+          "description": "custom artisan command"
+        },
+        {
+          "keys": [
+            "php artisan make:test PostTest",
+            "php artisan make:test PostTest --unit"
+          ],
+          "description": "feature / unit test"
+        }
+      ]
+    },
+    {
+      "title": "Database",
+      "items": [
+        {
+          "keys": [
+            "php artisan migrate"
+          ],
+          "description": "run pending migrations"
+        },
+        {
+          "keys": [
+            "php artisan migrate:status"
+          ],
+          "description": "which migrations have run"
+        },
+        {
+          "keys": [
+            "php artisan migrate:rollback --step=1"
+          ],
+          "description": "roll back the last migration"
+        },
+        {
+          "keys": [
+            "php artisan migrate:fresh --seed"
+          ],
+          "description": "drop ALL tables, re-run all migrations, then seed (DESTRUCTIVE)"
+        },
+        {
+          "keys": [
+            "php artisan db:seed --class=UserSeeder"
+          ],
+          "description": "run a specific seeder"
+        },
+        {
+          "keys": [
+            "php artisan db:show",
+            "php artisan db:table users"
+          ],
+          "description": "database / table overview"
+        },
+        {
+          "keys": [
+            "php artisan schema:dump --prune"
+          ],
+          "description": "dump the DB schema to a file; --prune deletes the existing migration files"
+        }
+      ]
+    },
+    {
+      "title": "Cache & optimisation",
+      "items": [
+        {
+          "keys": [
+            "php artisan optimize",
+            "php artisan optimize:clear"
+          ],
+          "description": "cache config, events, routes and views / remove those caches (optimize:clear also flushes ALL keys in the default cache store)"
+        },
+        {
+          "keys": [
+            "php artisan config:cache",
+            "php artisan config:clear"
+          ],
+          "description": "cache / clear config"
+        },
+        {
+          "keys": [
+            "php artisan route:cache",
+            "php artisan route:clear"
+          ],
+          "description": "cache / clear routes"
+        },
+        {
+          "keys": [
+            "php artisan view:clear"
+          ],
+          "description": "clear compiled Blade views"
+        },
+        {
+          "keys": [
+            "php artisan cache:clear"
+          ],
+          "description": "flush the application cache"
+        }
+      ]
+    },
+    {
+      "title": "Routes",
+      "items": [
+        {
+          "keys": [
+            "php artisan route:list"
+          ],
+          "description": "list routes"
+        },
+        {
+          "keys": [
+            "php artisan route:list --path=api --except-vendor"
+          ],
+          "description": "filter routes"
+        }
+      ]
+    },
+    {
+      "title": "Queues & scheduling",
+      "items": [
+        {
+          "keys": [
+            "php artisan queue:work --tries=3"
+          ],
+          "description": "process jobs"
+        },
+        {
+          "keys": [
+            "php artisan queue:listen"
+          ],
+          "description": "process jobs, reloading code on change (dev)"
+        },
+        {
+          "keys": [
+            "php artisan queue:failed",
+            "php artisan queue:retry all"
+          ],
+          "description": "list / retry failed jobs"
+        },
+        {
+          "keys": [
+            "php artisan queue:restart"
+          ],
+          "description": "workers exit gracefully after their current job (a process manager like Supervisor must restart them)"
+        },
+        {
+          "keys": [
+            "php artisan schedule:list"
+          ],
+          "description": "list scheduled tasks and next run"
+        },
+        {
+          "keys": [
+            "php artisan schedule:work"
+          ],
+          "description": "run the scheduler in the foreground every minute (local alternative to the cron entry)"
+        },
+        {
+          "keys": [
+            "php artisan reload"
+          ],
+          "description": "after deploying, terminate long-running services (queue workers, Reverb, Octane) so they restart on new code"
+        },
+        {
+          "keys": [
+            "php artisan schedule:pause",
+            "php artisan schedule:resume"
+          ],
+          "description": "pause / resume all scheduled tasks without a deploy (Laravel 13.38 ships schedule:resume; the 13.x docs call it schedule:continue)"
+        }
+      ]
+    },
+    {
+      "title": "Testing & other",
+      "items": [
+        {
+          "keys": [
+            "php artisan test --filter=PostTest"
+          ],
+          "description": "run tests; options like --filter/--testsuite are passed through to Pest/PHPUnit"
+        },
+        {
+          "keys": [
+            "php artisan test --parallel"
+          ],
+          "description": "run tests in parallel (requires the brianium/paratest dev package)"
+        },
+        {
+          "keys": [
+            "php artisan storage:link"
+          ],
+          "description": "symlink public/storage"
+        },
+        {
+          "keys": [
+            "php artisan key:generate"
+          ],
+          "description": "set APP_KEY"
+        },
+        {
+          "keys": [
+            "php artisan vendor:publish --tag=config"
+          ],
+          "description": "publish package files"
+        }
+      ]
+    }
+  ],
+  "source": {
+    "name": "Laravel 13.x documentation",
+    "url": "https://laravel.com/docs/13.x/artisan"
+  }
+}

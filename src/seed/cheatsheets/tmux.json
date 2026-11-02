@@ -1,0 +1,280 @@
+{
+  "id": "tmux",
+  "title": "tmux",
+  "description": "Sessions, windows and panes with the default prefix Ctrl+b. Checked against the tmux(1) man page.",
+  "tags": [
+    "terminal"
+  ],
+  "sections": [
+    {
+      "title": "Sessions",
+      "items": [
+        {
+          "keys": [
+            "tmux new -s <name>"
+          ],
+          "description": "start a new named session"
+        },
+        {
+          "keys": [
+            "tmux ls"
+          ],
+          "description": "list sessions"
+        },
+        {
+          "keys": [
+            "tmux attach -t <name>",
+            "tmux attach"
+          ],
+          "description": "attach to a named session / the most recent one (attach is the documented alias of attach-session)"
+        },
+        {
+          "keys": [
+            "tmux kill-session -t <name>"
+          ],
+          "description": "kill a session"
+        },
+        {
+          "keys": [
+            "prefix d"
+          ],
+          "description": "detach from session"
+        },
+        {
+          "keys": [
+            "prefix s"
+          ],
+          "description": "list and switch sessions"
+        },
+        {
+          "keys": [
+            "prefix $"
+          ],
+          "description": "rename session"
+        },
+        {
+          "keys": [
+            "prefix (",
+            "prefix )"
+          ],
+          "description": "previous / next session"
+        },
+        {
+          "keys": [
+            "prefix L"
+          ],
+          "description": "switch back to the last session"
+        }
+      ]
+    },
+    {
+      "title": "Windows",
+      "items": [
+        {
+          "keys": [
+            "prefix c"
+          ],
+          "description": "create window"
+        },
+        {
+          "keys": [
+            "prefix ,"
+          ],
+          "description": "rename window"
+        },
+        {
+          "keys": [
+            "prefix n",
+            "prefix p"
+          ],
+          "description": "next / previous window"
+        },
+        {
+          "keys": [
+            "prefix 0…9"
+          ],
+          "description": "switch to window by number"
+        },
+        {
+          "keys": [
+            "prefix w"
+          ],
+          "description": "list windows"
+        },
+        {
+          "keys": [
+            "prefix &"
+          ],
+          "description": "kill window"
+        },
+        {
+          "keys": [
+            "prefix l"
+          ],
+          "description": "go to the previously selected window"
+        },
+        {
+          "keys": [
+            "prefix f"
+          ],
+          "description": "search for text in open windows"
+        }
+      ]
+    },
+    {
+      "title": "Panes",
+      "items": [
+        {
+          "keys": [
+            "prefix %"
+          ],
+          "description": "split vertically (left/right)"
+        },
+        {
+          "keys": [
+            "prefix \""
+          ],
+          "description": "split horizontally (top/bottom)"
+        },
+        {
+          "keys": [
+            "prefix ←↑→↓",
+            "prefix o"
+          ],
+          "description": "move between panes / cycle panes"
+        },
+        {
+          "keys": [
+            "prefix z"
+          ],
+          "description": "toggle pane zoom (fullscreen)"
+        },
+        {
+          "keys": [
+            "prefix x"
+          ],
+          "description": "kill pane"
+        },
+        {
+          "keys": [
+            "prefix !"
+          ],
+          "description": "break pane into its own window"
+        },
+        {
+          "keys": [
+            "prefix {",
+            "prefix }"
+          ],
+          "description": "swap pane left / right"
+        },
+        {
+          "keys": [
+            "prefix Space"
+          ],
+          "description": "cycle pane layouts"
+        },
+        {
+          "keys": [
+            "prefix q"
+          ],
+          "description": "show pane numbers"
+        },
+        {
+          "keys": [
+            "prefix Ctrl+←↑→↓"
+          ],
+          "description": "resize pane by one cell (prefix Alt+arrow resizes by five)"
+        },
+        {
+          "keys": [
+            "prefix ;"
+          ],
+          "description": "go to the previously active pane"
+        },
+        {
+          "keys": [
+            "prefix Alt+1…7"
+          ],
+          "description": "apply one of the preset layouts"
+        }
+      ]
+    },
+    {
+      "title": "Copy mode",
+      "items": [
+        {
+          "keys": [
+            "prefix ["
+          ],
+          "description": "enter copy mode (scroll with arrows / PgUp)"
+        },
+        {
+          "keys": [
+            "Space",
+            "Enter"
+          ],
+          "description": "start / end selection (vi mode)"
+        },
+        {
+          "keys": [
+            "prefix ]"
+          ],
+          "description": "paste buffer"
+        },
+        {
+          "keys": [
+            "/",
+            "?"
+          ],
+          "description": "search forward / backward in copy mode"
+        },
+        {
+          "keys": [
+            "q"
+          ],
+          "description": "exit copy mode"
+        }
+      ]
+    },
+    {
+      "title": "Misc",
+      "items": [
+        {
+          "keys": [
+            "prefix :"
+          ],
+          "description": "command prompt"
+        },
+        {
+          "keys": [
+            "prefix ?"
+          ],
+          "description": "list key bindings"
+        },
+        {
+          "keys": [
+            "tmux source ~/.tmux.conf"
+          ],
+          "description": "reload config (source is the alias of source-file)"
+        },
+        {
+          "keys": [
+            "set -g mouse on"
+          ],
+          "description": "enable mouse (in ~/.tmux.conf)"
+        },
+        {
+          "keys": [
+            "setw -g mode-keys vi"
+          ],
+          "description": "vi keys in copy mode (in ~/.tmux.conf)"
+        }
+      ]
+    }
+  ],
+  "source": {
+    "name": "tmux(1) manual (DEFAULT KEY BINDINGS)",
+    "url": "https://man.openbsd.org/tmux.1#DEFAULT_KEY_BINDINGS"
+  }
+}

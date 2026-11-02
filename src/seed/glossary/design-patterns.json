@@ -1,0 +1,1128 @@
+{
+  "id": "design-patterns",
+  "title": "Design Patterns",
+  "description": "The 22 classic patterns as catalogued on refactoring.guru: creational, structural and behavioral. Summaries are written for this hub; follow the links for full explanations.",
+  "groups": [
+    "Creational",
+    "Structural",
+    "Behavioral"
+  ],
+  "source": {
+    "name": "refactoring.guru",
+    "url": "https://refactoring.guru/design-patterns/catalog"
+  },
+  "entries": [
+    {
+      "id": "factory-method",
+      "title": "Factory Method",
+      "category": "Design Patterns",
+      "group": "Creational",
+      "summary": "Let subclasses decide which concrete class to create, by calling an overridable creation method instead of `new`.",
+      "problem": "Code that calls `new ConcreteThing()` directly is tied to that class; adding a new variant means editing every place that creates one.",
+      "solution": "Move creation into a method (the factory method) on a base class. Subclasses override it to return a different product that shares a common interface.",
+      "whenToUse": [
+        "You don't know ahead of time which exact types your code must work with.",
+        "You want framework users to extend internal components by subclassing.",
+        "You want one place to change which product gets built."
+      ],
+      "pros": [
+        "Decouples creators from concrete products.",
+        "Single place for creation logic (SRP).",
+        "New products without touching client code (OCP)."
+      ],
+      "cons": [
+        "Can lead to many parallel subclasses just to create objects."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface Channel { public function deliver(string $msg): void; }\nfinal class SmsChannel implements Channel {\n    public function deliver(string $msg): void { /* send SMS */ }\n}\n\nabstract class Notifier {\n    abstract protected function createChannel(): Channel; // the factory method\n\n    public function notify(string $msg): void {\n        $this->createChannel()->deliver($msg);\n    }\n}\n\nfinal class SmsNotifier extends Notifier {\n    protected function createChannel(): Channel { return new SmsChannel(); }\n}"
+        },
+        {
+          "language": "python",
+          "code": "from abc import ABC, abstractmethod\n\nclass Channel(ABC):\n    @abstractmethod\n    def deliver(self, msg: str) -> None: ...\n\nclass SmsChannel(Channel):\n    def deliver(self, msg: str) -> None: ...  # send SMS\n\nclass Notifier(ABC):\n    @abstractmethod\n    def create_channel(self) -> Channel: ...  # the factory method\n\n    def notify(self, msg: str) -> None:\n        self.create_channel().deliver(msg)\n\nclass SmsNotifier(Notifier):\n    def create_channel(self) -> Channel:\n        return SmsChannel()"
+        },
+        {
+          "language": "dart",
+          "code": "abstract interface class Channel { void deliver(String msg); }\nclass SmsChannel implements Channel {\n  @override\n  void deliver(String msg) { /* send SMS */ }\n}\n\nabstract class Notifier {\n  Channel createChannel(); // the factory method\n\n  void notify(String msg) => createChannel().deliver(msg);\n}\n\nclass SmsNotifier extends Notifier {\n  @override\n  Channel createChannel() => SmsChannel();\n}"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "abstract-factory",
+        "template-method",
+        "prototype"
+      ],
+      "links": [
+        {
+          "label": "Factory Method on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/factory-method"
+        }
+      ]
+    },
+    {
+      "id": "abstract-factory",
+      "title": "Abstract Factory",
+      "category": "Design Patterns",
+      "group": "Creational",
+      "summary": "Create whole families of related objects through one interface, without naming their concrete classes.",
+      "problem": "Objects must be used together as a matching set (e.g. a dark-theme button with a dark-theme dialog) and mixing families causes bugs.",
+      "solution": "Define a factory interface with one creation method per product. Each concrete factory produces one consistent family; client code only sees the interfaces.",
+      "whenToUse": [
+        "Your code must work with several families of related products.",
+        "You want to guarantee products from the same family are used together."
+      ],
+      "pros": [
+        "Products from a factory are compatible with each other.",
+        "Client code is decoupled from concrete products.",
+        "Easy to swap an entire family at once."
+      ],
+      "cons": [
+        "Adding a new kind of product means changing the factory interface and every factory."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface Button { public function render(): string; }\ninterface Dialog { public function render(): string; }\n\ninterface UiFactory {\n    public function button(): Button;\n    public function dialog(): Dialog;\n}\n\nfinal class DarkUi implements UiFactory {\n    public function button(): Button { return new DarkButton(); }\n    public function dialog(): Dialog { return new DarkDialog(); }\n}\n\nfunction confirmScreen(UiFactory $ui): string {\n    return $ui->dialog()->render() . $ui->button()->render();\n}"
+        },
+        {
+          "language": "python",
+          "code": "from typing import Protocol\n\nclass Button(Protocol):\n    def render(self) -> str: ...\n\nclass Dialog(Protocol):\n    def render(self) -> str: ...\n\nclass UiFactory(Protocol):\n    def button(self) -> Button: ...\n    def dialog(self) -> Dialog: ...\n\nclass DarkUi:\n    def button(self) -> Button: return DarkButton()\n    def dialog(self) -> Dialog: return DarkDialog()\n\ndef confirm_screen(ui: UiFactory) -> str:\n    return ui.dialog().render() + ui.button().render()"
+        },
+        {
+          "language": "dart",
+          "code": "abstract interface class Button { String render(); }\nabstract interface class Dialog { String render(); }\n\nabstract interface class UiFactory {\n  Button button();\n  Dialog dialog();\n}\n\nclass DarkUi implements UiFactory {\n  @override\n  Button button() => DarkButton();\n  @override\n  Dialog dialog() => DarkDialog();\n}\n\nString confirmScreen(UiFactory ui) => ui.dialog().render() + ui.button().render();"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "factory-method",
+        "builder",
+        "singleton"
+      ],
+      "links": [
+        {
+          "label": "Abstract Factory on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/abstract-factory"
+        }
+      ]
+    },
+    {
+      "id": "builder",
+      "title": "Builder",
+      "category": "Design Patterns",
+      "group": "Creational",
+      "summary": "Construct a complex object step by step, so the same construction process can produce different results.",
+      "problem": "A constructor with many optional parameters (\"telescoping constructor\") is hard to read and easy to call wrongly.",
+      "solution": "Move construction into a builder with one method per step. Callers chain only the steps they need, then call `build()` to get the finished object.",
+      "whenToUse": [
+        "An object has many optional parts or configuration options.",
+        "You want to build different representations with the same steps.",
+        "You want construction to be readable at the call site."
+      ],
+      "pros": [
+        "Readable, self-documenting construction.",
+        "Can validate before producing the object.",
+        "Isolates complex construction code."
+      ],
+      "cons": [
+        "More classes/code than a plain constructor."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class HttpRequestBuilder {\n    private string $method = 'GET';\n    private array $headers = [];\n    private ?string $body = null;\n\n    public function __construct(private string $url) {}\n\n    public function method(string $m): static { $this->method = $m; return $this; }\n    public function header(string $k, string $v): static { $this->headers[$k] = $v; return $this; }\n    public function json(array $data): static {\n        $this->body = json_encode($data);\n        return $this->header('Content-Type', 'application/json');\n    }\n    public function build(): HttpRequest {\n        return new HttpRequest($this->method, $this->url, $this->headers, $this->body);\n    }\n}\n\n$req = (new HttpRequestBuilder('https://api.test/users'))\n    ->method('POST')->json(['name' => 'Ada'])->build();"
+        },
+        {
+          "language": "python",
+          "code": "class HttpRequestBuilder:\n    def __init__(self, url: str):\n        self._url, self._method, self._headers, self._body = url, \"GET\", {}, None\n\n    def method(self, m: str) -> \"HttpRequestBuilder\":\n        self._method = m\n        return self\n\n    def header(self, k: str, v: str) -> \"HttpRequestBuilder\":\n        self._headers[k] = v\n        return self\n\n    def build(self) -> \"HttpRequest\":\n        return HttpRequest(self._method, self._url, self._headers, self._body)\n\nreq = HttpRequestBuilder(\"https://api.test/users\").method(\"POST\").header(\"Accept\", \"application/json\").build()"
+        },
+        {
+          "language": "dart",
+          "code": "// Dart's cascade operator (..) gives builder-style chaining on any mutable object.\nclass HttpRequestBuilder {\n  HttpRequestBuilder(this.url);\n  final String url;\n  String method = 'GET';\n  final headers = <String, String>{};\n\n  HttpRequest build() => HttpRequest(method, url, Map.unmodifiable(headers));\n}\n\nfinal req = (HttpRequestBuilder('https://api.test/users')\n      ..method = 'POST'\n      ..headers['Accept'] = 'application/json')\n    .build();"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Django",
+          "note": "QuerySets are refined step by step and run lazily: \"The result of refining a QuerySet is itself a QuerySet, so it's possible to chain refinements together.\" This is builder-like, with the query only executing when evaluated.",
+          "url": "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+        }
+      ],
+      "related": [
+        "abstract-factory",
+        "composite"
+      ],
+      "links": [
+        {
+          "label": "Builder on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/builder"
+        }
+      ]
+    },
+    {
+      "id": "prototype",
+      "title": "Prototype",
+      "category": "Design Patterns",
+      "group": "Creational",
+      "summary": "Create new objects by copying an existing one, instead of building them from scratch.",
+      "problem": "Recreating an object can be expensive or impossible from outside (private state), and the caller may only know an interface.",
+      "solution": "Give objects a way to clone themselves. Callers copy a pre-configured prototype and tweak the copy.",
+      "whenToUse": [
+        "Objects are costly to create but cheap to copy.",
+        "You want copies without depending on concrete classes."
+      ],
+      "pros": [
+        "Clone without coupling to concrete classes.",
+        "Pre-configured prototypes replace subclasses that only differ in setup."
+      ],
+      "cons": [
+        "Deep-copying objects with circular references is tricky."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class Invoice {\n    public function __construct(public array $lines, public \\DateTimeImmutable $date) {}\n\n    // PHP's clone is shallow; deep-copy mutable members here.\n    public function __clone() {\n        $this->lines = array_map(fn ($l) => clone $l, $this->lines);\n    }\n}\n\n$copy = clone $template;   // then adjust the copy"
+        },
+        {
+          "language": "python",
+          "code": "import copy\n\ntemplate = Invoice(lines=[Line(\"Hosting\", 100)], date=date.today())\ndraft = copy.deepcopy(template)   # independent copy, nested objects included\ndraft.lines.append(Line(\"Support\", 50))"
+        },
+        {
+          "language": "dart",
+          "code": "class Invoice {\n  const Invoice({required this.lines, required this.date});\n  final List<Line> lines;\n  final DateTime date;\n\n  // The idiomatic Dart/Flutter take: copyWith on immutable objects.\n  Invoice copyWith({List<Line>? lines, DateTime? date}) =>\n      Invoice(lines: lines ?? List.of(this.lines), date: date ?? this.date);\n}\n\nfinal next = invoice.copyWith(date: DateTime.now());"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "factory-method",
+        "memento"
+      ],
+      "links": [
+        {
+          "label": "Prototype on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/prototype"
+        }
+      ]
+    },
+    {
+      "id": "singleton",
+      "title": "Singleton",
+      "category": "Design Patterns",
+      "group": "Creational",
+      "summary": "Ensure a class has only one instance and provide a global access point to it.",
+      "problem": "Some resources should exist once (a config registry, a connection pool), and creating several causes inconsistency or waste.",
+      "solution": "Hide the constructor and expose a static accessor that creates the instance on first use and returns it afterwards.",
+      "whenToUse": [
+        "Exactly one shared instance must exist.",
+        "You need stricter control than a global variable."
+      ],
+      "pros": [
+        "Guaranteed single instance.",
+        "Lazy initialisation."
+      ],
+      "cons": [
+        "Global state hides dependencies and makes testing harder.",
+        "Violates SRP (manages its own lifecycle).",
+        "Usually better solved with a DI container managing lifetime."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class Config {\n    private static ?Config $instance = null;\n    private function __construct(private array $values) {}\n\n    public static function instance(): Config {\n        return self::$instance ??= new Config(require 'config.php');\n    }\n}"
+        },
+        {
+          "language": "python",
+          "code": "# Python modules are imported once and cached (sys.modules), so a\n# module-level object is the simplest \"singleton\":\n# config.py\nsettings = load_settings()\n\n# elsewhere\nfrom config import settings"
+        },
+        {
+          "language": "dart",
+          "code": "class Config {\n  Config._internal();\n  static final Config _instance = Config._internal();\n\n  // A factory constructor can return the existing instance.\n  factory Config() => _instance;\n}\n\nvoid main() {\n  assert(identical(Config(), Config()));\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "The service container's `singleton` binding resolves a class once and returns the same instance on later calls. `scoped` does the same per request or job lifecycle. The container manages the lifetime, so the class itself stays an ordinary, testable class.",
+          "url": "https://laravel.com/docs/container#binding-a-singleton"
+        }
+      ],
+      "related": [
+        "facade",
+        "flyweight",
+        "dependency-injection"
+      ],
+      "links": [
+        {
+          "label": "Singleton on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/singleton"
+        }
+      ]
+    },
+    {
+      "id": "adapter",
+      "title": "Adapter",
+      "category": "Design Patterns",
+      "group": "Structural",
+      "summary": "Let objects with incompatible interfaces work together by wrapping one in a translator.",
+      "problem": "You want to use a third-party or legacy class, but its interface doesn't match what your code expects.",
+      "solution": "Write an adapter that implements your interface and translates calls to the wrapped object's API.",
+      "whenToUse": [
+        "Integrating a library or legacy code whose interface you can't change.",
+        "Several classes need the same missing behaviour behind a common interface."
+      ],
+      "pros": [
+        "Keeps conversion code out of business logic (SRP).",
+        "Swap implementations behind your own interface (OCP)."
+      ],
+      "cons": [
+        "An extra layer of indirection."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface PaymentGateway { public function charge(int $cents, string $token): string; }\n\nfinal class StripeAdapter implements PaymentGateway {\n    public function __construct(private StripeClient $stripe) {}\n\n    public function charge(int $cents, string $token): string {\n        $charge = $this->stripe->charges->create(['amount' => $cents, 'currency' => 'usd', 'source' => $token]);\n        return $charge->id;\n    }\n}"
+        },
+        {
+          "language": "python",
+          "code": "class PaymentGateway(Protocol):\n    def charge(self, cents: int, token: str) -> str: ...\n\nclass LegacyBankAdapter:\n    def __init__(self, bank: LegacyBankApi):\n        self._bank = bank\n\n    def charge(self, cents: int, token: str) -> str:\n        # legacy API wants rands as a float and returns a dict\n        result = self._bank.make_payment(amount=cents / 100, card_ref=token)\n        return result[\"reference\"]"
+        },
+        {
+          "language": "dart",
+          "code": "abstract interface class PaymentGateway {\n  Future<String> charge(int cents, String token);\n}\n\nclass LegacyBankAdapter implements PaymentGateway {\n  LegacyBankAdapter(this._bank);\n  final LegacyBankApi _bank;\n\n  @override\n  Future<String> charge(int cents, String token) async {\n    final result = await _bank.makePayment(amount: cents / 100, cardRef: token);\n    return result['reference'] as String;\n  }\n}"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "bridge",
+        "decorator",
+        "facade",
+        "proxy"
+      ],
+      "links": [
+        {
+          "label": "Adapter on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/adapter"
+        }
+      ]
+    },
+    {
+      "id": "bridge",
+      "title": "Bridge",
+      "category": "Design Patterns",
+      "group": "Structural",
+      "summary": "Split a class that varies in two independent ways into two hierarchies, abstraction and implementation, connected by composition.",
+      "problem": "Extending a class in two dimensions (e.g. report type × export format) by inheritance explodes into every combination of subclasses.",
+      "solution": "Keep one dimension as the abstraction and move the other into a separate interface that the abstraction holds a reference to.",
+      "whenToUse": [
+        "A class varies along two or more independent axes.",
+        "You need to switch implementations at runtime."
+      ],
+      "pros": [
+        "Avoids a combinatorial explosion of subclasses.",
+        "Abstraction and implementation evolve independently."
+      ],
+      "cons": [
+        "More indirection; can over-complicate a cohesive class."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface Exporter { public function export(array $rows): string; }\nfinal class CsvExporter implements Exporter { /* ... */ }\nfinal class PdfExporter implements Exporter { /* ... */ }\n\nabstract class Report {\n    public function __construct(protected Exporter $exporter) {}  // the bridge\n    abstract protected function rows(): array;\n    public function render(): string { return $this->exporter->export($this->rows()); }\n}\n\nfinal class SalesReport extends Report { protected function rows(): array { /* ... */ } }\n\n(new SalesReport(new PdfExporter()))->render();"
+        },
+        {
+          "language": "python",
+          "code": "class Exporter(Protocol):\n    def export(self, rows: list[dict]) -> bytes: ...\n\nclass Report(ABC):\n    def __init__(self, exporter: Exporter):\n        self.exporter = exporter   # the bridge\n\n    @abstractmethod\n    def rows(self) -> list[dict]: ...\n\n    def render(self) -> bytes:\n        return self.exporter.export(self.rows())\n\nSalesReport(CsvExporter()).render()"
+        },
+        {
+          "language": "dart",
+          "code": "abstract interface class Exporter { String export(List<Map<String, Object?>> rows); }\n\nabstract class Report {\n  Report(this.exporter); // the bridge\n  final Exporter exporter;\n\n  List<Map<String, Object?>> rows();\n  String render() => exporter.export(rows());\n}\n\nclass SalesReport extends Report {\n  SalesReport(super.exporter);\n  @override\n  List<Map<String, Object?>> rows() => [];\n}"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "adapter",
+        "strategy",
+        "abstract-factory"
+      ],
+      "links": [
+        {
+          "label": "Bridge on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/bridge"
+        }
+      ]
+    },
+    {
+      "id": "composite",
+      "title": "Composite",
+      "category": "Design Patterns",
+      "group": "Structural",
+      "summary": "Compose objects into tree structures and treat individual objects and groups the same way.",
+      "problem": "Code has to handle both single items and containers of items (files and folders, menu items and sub-menus) with lots of type checks.",
+      "solution": "Give leaves and containers a common interface. Containers implement operations by delegating to their children and combining the results.",
+      "whenToUse": [
+        "Your model is naturally a tree.",
+        "Clients should treat leaves and branches uniformly."
+      ],
+      "pros": [
+        "Work with complex trees through one interface.",
+        "Add new element types without changing client code."
+      ],
+      "cons": [
+        "A single interface can become too general for very different elements."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface Node { public function size(): int; }\n\nfinal class File implements Node {\n    public function __construct(private int $bytes) {}\n    public function size(): int { return $this->bytes; }\n}\n\nfinal class Folder implements Node {\n    /** @param Node[] $children */\n    public function __construct(private array $children = []) {}\n    public function size(): int {\n        return array_sum(array_map(fn (Node $n) => $n->size(), $this->children));\n    }\n}"
+        },
+        {
+          "language": "python",
+          "code": "class Node(Protocol):\n    def size(self) -> int: ...\n\n@dataclass\nclass File:\n    bytes: int\n    def size(self) -> int: return self.bytes\n\n@dataclass\nclass Folder:\n    children: list[Node]\n    def size(self) -> int: return sum(c.size() for c in self.children)"
+        },
+        {
+          "language": "dart",
+          "code": "sealed class Node { int get size; }\n\nclass File extends Node {\n  File(this.bytes);\n  final int bytes;\n  @override\n  int get size => bytes;\n}\n\nclass Folder extends Node {\n  Folder(this.children);\n  final List<Node> children;\n  @override\n  int get size => children.fold(0, (sum, c) => sum + c.size);\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Flutter",
+          "note": "Widgets form a tree built by composition: \"Widgets form a hierarchy based on composition.\" A Container is itself made of smaller layout, painting and positioning widgets.",
+          "url": "https://docs.flutter.dev/resources/architectural-overview"
+        }
+      ],
+      "related": [
+        "decorator",
+        "iterator",
+        "visitor",
+        "builder"
+      ],
+      "links": [
+        {
+          "label": "Composite on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/composite"
+        }
+      ]
+    },
+    {
+      "id": "decorator",
+      "title": "Decorator",
+      "category": "Design Patterns",
+      "group": "Structural",
+      "summary": "Attach extra behaviour to an object by wrapping it in another object with the same interface.",
+      "problem": "Adding features through subclassing (logging, caching, retries) leads to rigid hierarchies and can't be combined at runtime.",
+      "solution": "Wrap the object in a decorator that implements the same interface, adds its behaviour, and delegates the rest to the wrapped object. Decorators can be stacked.",
+      "whenToUse": [
+        "Add responsibilities to individual objects at runtime.",
+        "Combine several optional behaviours (cache + log + retry).",
+        "Subclassing is impractical or impossible (final classes)."
+      ],
+      "pros": [
+        "Mix and match behaviours at runtime.",
+        "Each concern lives in its own small class (SRP)."
+      ],
+      "cons": [
+        "Order of wrapping matters and can be confusing.",
+        "Many small wrapper objects."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface UserRepository { public function find(int $id): ?User; }\n\nfinal class CachedUserRepository implements UserRepository {\n    public function __construct(private UserRepository $inner, private CacheInterface $cache) {}\n\n    public function find(int $id): ?User {\n        return $this->cache->remember(\"user:$id\", 300, fn () => $this->inner->find($id));\n    }\n}\n\n$repo = new CachedUserRepository(new EloquentUserRepository(), $cache);"
+        },
+        {
+          "language": "python",
+          "code": "class CachedUserRepository:\n    def __init__(self, inner: UserRepository, cache: Cache):\n        self._inner, self._cache = inner, cache\n\n    def find(self, user_id: int) -> User | None:\n        key = f\"user:{user_id}\"\n        if (hit := self._cache.get(key)) is not None:\n            return hit\n        user = self._inner.find(user_id)\n        self._cache.set(key, user, timeout=300)\n        return user\n\n# Note: Python's @decorator syntax wraps *functions*. Same idea, different level."
+        },
+        {
+          "language": "dart",
+          "code": "class CachedUserRepository implements UserRepository {\n  CachedUserRepository(this._inner);\n  final UserRepository _inner;\n  final _cache = <int, User?>{};\n\n  @override\n  Future<User?> find(int id) async =>\n      _cache.containsKey(id) ? _cache[id] : (_cache[id] = await _inner.find(id));\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "The container's `extend` method lets you decorate a resolved service. The docs' own example returns `new DecoratedService($service)`.",
+          "url": "https://laravel.com/docs/container#extending-bindings"
+        }
+      ],
+      "related": [
+        "adapter",
+        "proxy",
+        "composite",
+        "chain-of-responsibility",
+        "strategy"
+      ],
+      "links": [
+        {
+          "label": "Decorator on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/decorator"
+        }
+      ]
+    },
+    {
+      "id": "facade",
+      "title": "Facade",
+      "category": "Design Patterns",
+      "group": "Structural",
+      "summary": "Provide one simplified interface to a complex subsystem.",
+      "problem": "Using a subsystem means wiring together many classes in the right order, and that knowledge leaks into every caller.",
+      "solution": "Create a facade class with a few high-level methods that coordinate the subsystem internally. Callers depend on the facade only.",
+      "whenToUse": [
+        "You need a simple entry point to a complex library or module.",
+        "You want to layer a subsystem and reduce coupling to its internals."
+      ],
+      "pros": [
+        "Isolates clients from subsystem complexity.",
+        "One place to change how the subsystem is used."
+      ],
+      "cons": [
+        "Can grow into a god object coupled to everything."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class VideoPublisher {\n    public function __construct(\n        private Transcoder $transcoder,\n        private ThumbnailGenerator $thumbs,\n        private CdnUploader $cdn,\n    ) {}\n\n    public function publish(string $path): string {\n        $mp4 = $this->transcoder->toMp4($path);\n        $this->cdn->upload($this->thumbs->fromVideo($mp4));\n        return $this->cdn->upload($mp4);\n    }\n}"
+        },
+        {
+          "language": "python",
+          "code": "class VideoPublisher:\n    def __init__(self, transcoder, thumbs, cdn):\n        self._transcoder, self._thumbs, self._cdn = transcoder, thumbs, cdn\n\n    def publish(self, path: str) -> str:\n        mp4 = self._transcoder.to_mp4(path)\n        self._cdn.upload(self._thumbs.from_video(mp4))\n        return self._cdn.upload(mp4)"
+        },
+        {
+          "language": "dart",
+          "code": "class VideoPublisher {\n  VideoPublisher(this._transcoder, this._thumbs, this._cdn);\n  final Transcoder _transcoder;\n  final ThumbnailGenerator _thumbs;\n  final CdnUploader _cdn;\n\n  Future<String> publish(String path) async {\n    final mp4 = await _transcoder.toMp4(path);\n    await _cdn.upload(await _thumbs.fromVideo(mp4));\n    return _cdn.upload(mp4);\n  }\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "Careful, the name is shared but the pattern is different. Laravel's \"facades\" (Cache::get(), Route::get()) are \"static proxies\" to services in the container: a static-looking API that forwards calls via `__callStatic()`. That's closer to the Proxy pattern than to a GoF Facade.",
+          "url": "https://laravel.com/docs/facades"
+        }
+      ],
+      "related": [
+        "adapter",
+        "mediator",
+        "proxy",
+        "singleton"
+      ],
+      "links": [
+        {
+          "label": "Facade on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/facade"
+        }
+      ]
+    },
+    {
+      "id": "flyweight",
+      "title": "Flyweight",
+      "category": "Design Patterns",
+      "group": "Structural",
+      "summary": "Fit more objects in memory by sharing the common (intrinsic) state between them instead of storing it in each one.",
+      "problem": "Huge numbers of similar objects (map markers, particles, glyphs) each duplicate the same heavy data and exhaust memory.",
+      "solution": "Split state into shared intrinsic state (stored once in a flyweight from a factory/cache) and per-object extrinsic state passed in by the caller.",
+      "whenToUse": [
+        "You must create a very large number of similar objects.",
+        "Most of each object's state can be made shared and immutable."
+      ],
+      "pros": [
+        "Large memory savings."
+      ],
+      "cons": [
+        "Trades RAM for CPU (extrinsic state recomputed or passed around).",
+        "More complex code."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class MarkerStyle {            // intrinsic, shared\n    public function __construct(public readonly string $icon, public readonly string $color) {}\n}\n\nfinal class MarkerStyles {\n    private static array $pool = [];\n    public static function get(string $icon, string $color): MarkerStyle {\n        return self::$pool[\"$icon|$color\"] ??= new MarkerStyle($icon, $color);\n    }\n}\n\n// extrinsic state (lat/lng) stays per marker\n$markers[] = ['lat' => $lat, 'lng' => $lng, 'style' => MarkerStyles::get('pin.svg', 'red')];"
+        },
+        {
+          "language": "python",
+          "code": "from functools import cache\n\n@dataclass(frozen=True)\nclass MarkerStyle:      # intrinsic, shared\n    icon: str\n    color: str\n\n@cache\ndef marker_style(icon: str, color: str) -> MarkerStyle:\n    return MarkerStyle(icon, color)\n\nmarkers = [(lat, lng, marker_style(\"pin.svg\", \"red\")) for lat, lng in points]"
+        },
+        {
+          "language": "dart",
+          "code": "class MarkerStyle {\n  const MarkerStyle(this.icon, this.color); // intrinsic, shared\n  final String icon;\n  final int color;\n}\n\n// `const` instances with equal arguments are canonicalised: Dart shares one object.\nconst red = MarkerStyle('pin.svg', 0xFFFF0000);\nfinal markers = points.map((p) => (lat: p.lat, lng: p.lng, style: red)).toList();"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "composite",
+        "singleton"
+      ],
+      "links": [
+        {
+          "label": "Flyweight on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/flyweight"
+        }
+      ]
+    },
+    {
+      "id": "proxy",
+      "title": "Proxy",
+      "category": "Design Patterns",
+      "group": "Structural",
+      "summary": "Provide a stand-in object that controls access to another object: lazy loading, caching, access checks or remote calls.",
+      "problem": "You need to run logic before or after access to an object (create it lazily, check permissions, log) without changing the object or its clients.",
+      "solution": "Create a proxy implementing the same interface that holds (or creates) the real object and forwards calls, adding its control logic.",
+      "whenToUse": [
+        "Lazy initialisation of a heavy object (virtual proxy).",
+        "Access control (protection proxy).",
+        "Local stand-in for a remote service, or caching/logging."
+      ],
+      "pros": [
+        "Control the service object without clients knowing.",
+        "Works even if the real object isn't ready yet."
+      ],
+      "cons": [
+        "Adds latency/indirection.",
+        "More classes."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class LazyReportProxy implements Report {\n    private ?Report $real = null;\n    public function __construct(private int $id) {}\n\n    public function render(): string {\n        $this->real ??= HeavyReport::loadFromWarehouse($this->id);  // created on first use\n        return $this->real->render();\n    }\n}"
+        },
+        {
+          "language": "python",
+          "code": "class LazyReportProxy:\n    def __init__(self, report_id: int):\n        self._id, self._real = report_id, None\n\n    def render(self) -> str:\n        if self._real is None:\n            self._real = HeavyReport.load_from_warehouse(self._id)\n        return self._real.render()"
+        },
+        {
+          "language": "dart",
+          "code": "class LazyReportProxy implements Report {\n  LazyReportProxy(this.id);\n  final int id;\n  // `late final` with an initializer is evaluated lazily on first access.\n  late final Report _real = HeavyReport.loadFromWarehouse(id);\n\n  @override\n  String render() => _real.render();\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "Laravel describes its facades as \"static proxies\" to underlying classes in the service container. Calls are forwarded to the resolved instance, which is also why they can be mocked in tests.",
+          "url": "https://laravel.com/docs/facades"
+        }
+      ],
+      "related": [
+        "adapter",
+        "decorator",
+        "facade"
+      ],
+      "links": [
+        {
+          "label": "Proxy on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/proxy"
+        }
+      ]
+    },
+    {
+      "id": "chain-of-responsibility",
+      "title": "Chain of Responsibility",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Pass a request along a chain of handlers. Each handler either processes it, passes it on, or stops the chain.",
+      "problem": "A request needs several sequential checks (auth, validation, rate limiting), and hard-wiring them together makes the order and set rigid.",
+      "solution": "Turn each check into a handler with a reference to the next. Each one decides whether to handle the request, pass it along, or short-circuit.",
+      "whenToUse": [
+        "Several handlers may process a request, in a configurable order.",
+        "The set of handlers should change at runtime or per route."
+      ],
+      "pros": [
+        "Control the order of handling.",
+        "Add/remove handlers without touching others (OCP, SRP)."
+      ],
+      "cons": [
+        "A request may fall off the end of the chain unhandled.",
+        "Harder to trace which handler did what."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "abstract class Handler {\n    private ?Handler $next = null;\n    public function then(Handler $next): Handler { return $this->next = $next; }\n    public function handle(Request $r): Response {\n        return $this->next?->handle($r) ?? new Response(404);\n    }\n}\n\nfinal class RequireAuth extends Handler {\n    public function handle(Request $r): Response {\n        return $r->user() ? parent::handle($r) : new Response(401);  // short-circuit\n    }\n}\n\n$chain = new RequireAuth();\n$chain->then(new ThrottleRequests())->then(new RouteToController());"
+        },
+        {
+          "language": "python",
+          "code": "Handler = Callable[[Request], Response]\n\ndef require_auth(get_response: Handler) -> Handler:\n    def handler(request: Request) -> Response:\n        if not request.user:\n            return Response(status=401)       # short-circuit\n        return get_response(request)          # pass along\n    return handler\n\napp = require_auth(throttle(route_to_view))"
+        },
+        {
+          "language": "dart",
+          "code": "typedef Handler = Future<Response> Function(Request);\ntypedef Middleware = Handler Function(Handler next);\n\nMiddleware requireAuth = (next) => (req) async =>\n    req.user == null ? Response(401) : next(req);\n\nHandler pipeline(List<Middleware> ms, Handler core) =>\n    ms.reversed.fold(core, (next, m) => m(next));"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "Middleware are \"a series of 'layers' HTTP requests must pass through\". Each calls `$next($request)` to pass the request on, or returns a response early.",
+          "url": "https://laravel.com/docs/middleware"
+        },
+        {
+          "framework": "Django",
+          "note": "Middleware wrap the view \"like an onion\". A layer can \"short-circuit and return a response without ever calling its get_response\", and the response passes back out in reverse order.",
+          "url": "https://docs.djangoproject.com/en/stable/topics/http/middleware/"
+        }
+      ],
+      "related": [
+        "command",
+        "decorator",
+        "composite"
+      ],
+      "links": [
+        {
+          "label": "Chain of Responsibility on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/chain-of-responsibility"
+        }
+      ]
+    },
+    {
+      "id": "command",
+      "title": "Command",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Turn a request into a stand-alone object that holds everything needed to perform it.",
+      "problem": "You want to queue, schedule, log, retry or undo operations, but they're plain method calls that can't be stored or passed around.",
+      "solution": "Wrap each operation in a command object with an `execute()` method (and optionally `undo()`). Invokers run commands without knowing what they do.",
+      "whenToUse": [
+        "Queue or schedule work for later (jobs).",
+        "Support undo/redo.",
+        "Parameterise UI elements (buttons, menu items) with actions."
+      ],
+      "pros": [
+        "Decouples invokers from the work performed.",
+        "Enables queues, retries, logging, undo."
+      ],
+      "cons": [
+        "Many small command classes."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface Command { public function execute(): void; }\n\nfinal class SendInvoiceEmail implements Command {\n    public function __construct(private int $invoiceId) {}\n    public function execute(): void { /* load invoice, send mail */ }\n}\n\nfinal class Queue {\n    private array $commands = [];\n    public function push(Command $c): void { $this->commands[] = $c; }\n    public function work(): void { while ($c = array_shift($this->commands)) $c->execute(); }\n}"
+        },
+        {
+          "language": "python",
+          "code": "@dataclass\nclass AddLine:\n    doc: Document\n    text: str\n\n    def execute(self) -> None:\n        self.doc.lines.append(self.text)\n\n    def undo(self) -> None:\n        self.doc.lines.pop()\n\nhistory: list = []\ncmd = AddLine(doc, \"hello\"); cmd.execute(); history.append(cmd)\nhistory.pop().undo()"
+        },
+        {
+          "language": "dart",
+          "code": "abstract interface class Command {\n  void execute();\n  void undo();\n}\n\nclass AddLine implements Command {\n  AddLine(this.doc, this.text);\n  final Document doc;\n  final String text;\n  @override\n  void execute() => doc.lines.add(text);\n  @override\n  void undo() => doc.lines.removeLast();\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Flutter",
+          "note": "Flutter's architecture guide has view models expose \"commands\" that views call, keeping UI event handling out of the widgets.",
+          "url": "https://docs.flutter.dev/app-architecture/guide"
+        }
+      ],
+      "related": [
+        "chain-of-responsibility",
+        "memento",
+        "strategy"
+      ],
+      "links": [
+        {
+          "label": "Command on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/command"
+        }
+      ]
+    },
+    {
+      "id": "iterator",
+      "title": "Iterator",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Traverse the elements of a collection without exposing how it's stored (array, tree, paginated API...).",
+      "problem": "Every caller that loops over a complex structure has to know its internals, and traversal logic gets duplicated.",
+      "solution": "Move traversal into an iterator object, or into the language's iterator protocol and generators, so callers just `foreach`.",
+      "whenToUse": [
+        "The collection has a non-trivial structure.",
+        "You want several ways to traverse the same collection.",
+        "You want to stream large/paginated data lazily."
+      ],
+      "pros": [
+        "Clients don't depend on collection internals.",
+        "Lazy traversal of large or infinite sequences."
+      ],
+      "cons": [
+        "Overkill for simple arrays."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "// Generators make lazy iterators trivial in PHP.\nfunction allCustomers(ApiClient $api): \\Generator {\n    $page = 1;\n    do {\n        $batch = $api->customers(page: $page++);\n        yield from $batch->items;\n    } while ($batch->hasMore);\n}\n\nforeach (allCustomers($api) as $customer) { /* ... */ }"
+        },
+        {
+          "language": "python",
+          "code": "def all_customers(api: ApiClient) -> Iterator[Customer]:\n    page = 1\n    while True:\n        batch = api.customers(page=page)\n        yield from batch.items\n        if not batch.has_more:\n            return\n        page += 1\n\nfor customer in all_customers(api): ..."
+        },
+        {
+          "language": "dart",
+          "code": "// sync* returns a lazy Iterable; async* returns a Stream.\nStream<Customer> allCustomers(ApiClient api) async* {\n  var page = 1;\n  while (true) {\n    final batch = await api.customers(page: page++);\n    yield* Stream.fromIterable(batch.items);\n    if (!batch.hasMore) return;\n  }\n}\n\nFuture<void> main() async {\n  await for (final c in allCustomers(api)) { /* ... */ }\n}"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "composite",
+        "visitor"
+      ],
+      "links": [
+        {
+          "label": "Iterator on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/iterator"
+        }
+      ]
+    },
+    {
+      "id": "mediator",
+      "title": "Mediator",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Reduce chaotic dependencies between objects by making them communicate only through a mediator.",
+      "problem": "Components (form fields, UI widgets, services) reference each other directly, so changing one ripples through many.",
+      "solution": "Components notify a mediator of events. The mediator holds the coordination logic and tells the others what to do.",
+      "whenToUse": [
+        "Many objects interact in complex, tangled ways.",
+        "You want to reuse components independently of each other."
+      ],
+      "pros": [
+        "Components are decoupled and reusable.",
+        "Interaction logic is in one place."
+      ],
+      "cons": [
+        "The mediator can turn into a god object."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class CheckoutForm {   // the mediator\n    public function __construct(private Field $country, private Field $vat, private Button $submit) {}\n\n    public function changed(Field $field): void {\n        if ($field === $this->country) {\n            $this->vat->setRequired($this->country->value() === 'ZA');\n        }\n        $this->submit->setEnabled($this->country->isValid() && $this->vat->isValid());\n    }\n}"
+        },
+        {
+          "language": "python",
+          "code": "class CheckoutForm:  # the mediator\n    def __init__(self, country: Field, vat: Field, submit: Button):\n        self.country, self.vat, self.submit = country, vat, submit\n        for f in (country, vat):\n            f.on_change = self.changed\n\n    def changed(self, field: Field) -> None:\n        if field is self.country:\n            self.vat.required = self.country.value == \"ZA\"\n        self.submit.enabled = self.country.valid and self.vat.valid"
+        },
+        {
+          "language": "dart",
+          "code": "class CheckoutForm { // the mediator\n  CheckoutForm(this.country, this.vat, this.submit) {\n    country.onChanged = changed;\n    vat.onChanged = changed;\n  }\n  final Field country, vat;\n  final Button submit;\n\n  void changed(Field field) {\n    if (identical(field, country)) vat.required = country.value == 'ZA';\n    submit.enabled = country.isValid && vat.isValid;\n  }\n}"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "observer",
+        "facade",
+        "chain-of-responsibility"
+      ],
+      "links": [
+        {
+          "label": "Mediator on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/mediator"
+        }
+      ]
+    },
+    {
+      "id": "memento",
+      "title": "Memento",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Capture and restore an object's previous state without exposing its internals.",
+      "problem": "Undo or rollback needs snapshots of private state, but copying fields from outside breaks encapsulation.",
+      "solution": "The originator creates an opaque memento of its own state and can restore from it. A caretaker stores mementos without looking inside.",
+      "whenToUse": [
+        "Undo/redo or checkpoints.",
+        "Transactions that may need rolling back."
+      ],
+      "pros": [
+        "Snapshots without breaking encapsulation."
+      ],
+      "cons": [
+        "Memory use if snapshots are large or frequent."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class Editor {\n    private string $text = '';\n    public function type(string $s): void { $this->text .= $s; }\n    public function save(): EditorMemento { return new EditorMemento($this->text); }\n    public function restore(EditorMemento $m): void { $this->text = $m->text; }\n}\nfinal class EditorMemento { public function __construct(public readonly string $text) {} }\n\n$history[] = $editor->save();\n$editor->type(' oops');\n$editor->restore(array_pop($history));"
+        },
+        {
+          "language": "python",
+          "code": "@dataclass(frozen=True)\nclass EditorMemento:\n    text: str\n\nclass Editor:\n    def __init__(self): self._text = \"\"\n    def type(self, s: str): self._text += s\n    def save(self) -> EditorMemento: return EditorMemento(self._text)\n    def restore(self, m: EditorMemento): self._text = m.text"
+        },
+        {
+          "language": "dart",
+          "code": "// Immutable state objects are mementos for free: keep the previous value.\nvar state = const EditorState(text: '');\nfinal history = <EditorState>[];\n\nvoid apply(EditorState next) {\n  history.add(state);\n  state = next;\n}\n\nvoid undo() => state = history.removeLast();"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "command",
+        "prototype",
+        "iterator"
+      ],
+      "links": [
+        {
+          "label": "Memento on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/memento"
+        }
+      ]
+    },
+    {
+      "id": "observer",
+      "title": "Observer",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Let objects subscribe to events on another object and be notified automatically when they happen.",
+      "problem": "When something happens (order shipped, user registered), several unrelated parts of the system must react, and calling each directly couples them all together.",
+      "solution": "The subject keeps a list of subscribers and notifies them of events. Subscribers register and unregister themselves, and the subject doesn't know what they do.",
+      "whenToUse": [
+        "Changes to one object require reacting in others you don't want to couple to.",
+        "The set of interested parties changes at runtime."
+      ],
+      "pros": [
+        "Publishers and subscribers are decoupled (OCP).",
+        "Relationships established at runtime."
+      ],
+      "cons": [
+        "Notification order isn't guaranteed.",
+        "Implicit flow is harder to follow and debug."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "final class EventBus {\n    private array $listeners = [];\n    public function listen(string $event, callable $fn): void { $this->listeners[$event][] = $fn; }\n    public function dispatch(object $event): void {\n        foreach ($this->listeners[$event::class] ?? [] as $fn) $fn($event);\n    }\n}\n\n$bus->listen(OrderShipped::class, fn (OrderShipped $e) => $sms->send($e->order->phone, 'Shipped!'));\n$bus->dispatch(new OrderShipped($order));"
+        },
+        {
+          "language": "python",
+          "code": "class Signal:\n    def __init__(self): self._receivers: list[Callable] = []\n    def connect(self, fn: Callable) -> None: self._receivers.append(fn)\n    def send(self, **kwargs) -> None:\n        for fn in self._receivers: fn(**kwargs)\n\norder_shipped = Signal()\norder_shipped.connect(lambda order: sms.send(order.phone, \"Shipped!\"))\norder_shipped.send(order=order)"
+        },
+        {
+          "language": "dart",
+          "code": "class Cart extends ChangeNotifier {\n  final _items = <Item>[];\n  List<Item> get items => List.unmodifiable(_items);\n\n  void add(Item item) {\n    _items.add(item);\n    notifyListeners(); // observers (e.g. ListenableBuilder) rebuild\n  }\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "From the docs: \"Laravel's events provide a simple observer pattern implementation.\" Eloquent also has model Observers that group listeners for a model's lifecycle events.",
+          "url": "https://laravel.com/docs/events"
+        },
+        {
+          "framework": "Django",
+          "note": "Signals let \"senders notify a set of receivers that some action has taken place.\" The docs warn they \"can quickly lead to code that is hard to understand\" and suggest calling the handler directly where possible.",
+          "url": "https://docs.djangoproject.com/en/stable/topics/signals/"
+        },
+        {
+          "framework": "Flutter",
+          "note": "ChangeNotifier provides \"a change notification API using VoidCallback\": `addListener` / `removeListener` / `notifyListeners`. ValueNotifier is a ChangeNotifier that wraps a single value.",
+          "url": "https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html"
+        }
+      ],
+      "related": [
+        "mediator",
+        "chain-of-responsibility",
+        "command"
+      ],
+      "links": [
+        {
+          "label": "Observer on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/observer"
+        }
+      ]
+    },
+    {
+      "id": "state",
+      "title": "State",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Let an object change its behaviour when its internal state changes, as if it changed class.",
+      "problem": "Methods are full of `switch ($this->status)` blocks, and every new status means editing them all.",
+      "solution": "Move each state's behaviour into its own class implementing a common interface. The context delegates to the current state object, and states trigger transitions.",
+      "whenToUse": [
+        "Behaviour depends heavily on state, with many states.",
+        "State-specific conditionals are duplicated across methods."
+      ],
+      "pros": [
+        "Each state's logic is isolated (SRP).",
+        "New states without changing existing ones (OCP)."
+      ],
+      "cons": [
+        "Overkill for a few simple states."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface OrderState { public function ship(Order $o): void; }\n\nfinal class Paid implements OrderState {\n    public function ship(Order $o): void { $o->setState(new Shipped()); }\n}\nfinal class Pending implements OrderState {\n    public function ship(Order $o): void { throw new DomainException('Cannot ship unpaid order'); }\n}\n\nfinal class Order {\n    public function __construct(private OrderState $state = new Pending()) {}\n    public function setState(OrderState $s): void { $this->state = $s; }\n    public function ship(): void { $this->state->ship($this); }\n}"
+        },
+        {
+          "language": "python",
+          "code": "class Pending:\n    def ship(self, order): raise ValueError(\"Cannot ship unpaid order\")\n\nclass Paid:\n    def ship(self, order): order.state = Shipped()\n\nclass Order:\n    def __init__(self): self.state = Pending()\n    def ship(self): self.state.ship(self)"
+        },
+        {
+          "language": "dart",
+          "code": "sealed class OrderState {}\nclass Pending extends OrderState {}\nclass Paid extends OrderState {}\nclass Shipped extends OrderState {}\n\n// Dart 3 sealed classes + exhaustive switch: the compiler checks every state is handled.\nOrderState ship(OrderState s) => switch (s) {\n      Pending() => throw StateError('Cannot ship unpaid order'),\n      Paid() => Shipped(),\n      Shipped() => s,\n    };"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "strategy",
+        "memento"
+      ],
+      "links": [
+        {
+          "label": "State on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/state"
+        }
+      ]
+    },
+    {
+      "id": "strategy",
+      "title": "Strategy",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Define a family of interchangeable algorithms, put each in its own class, and choose one at runtime.",
+      "problem": "A class carries several variants of an algorithm (shipping rates, pricing rules, export formats) selected by conditionals that keep growing.",
+      "solution": "Extract each variant into a strategy implementing a common interface. The context receives a strategy and delegates to it.",
+      "whenToUse": [
+        "Several variants of an algorithm should be swappable at runtime.",
+        "You want to isolate algorithm details from the code that uses them."
+      ],
+      "pros": [
+        "Swap algorithms at runtime.",
+        "Replace conditionals with composition (OCP).",
+        "Strategies are easy to test alone."
+      ],
+      "cons": [
+        "Clients must know the strategies exist to pick one.",
+        "For a couple of variants, a plain function argument may be enough."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface ShippingRate { public function cost(Parcel $p): int; }\nfinal class FlatRate implements ShippingRate { public function cost(Parcel $p): int { return 5000; } }\nfinal class ByWeight implements ShippingRate { public function cost(Parcel $p): int { return $p->grams * 3; } }\n\nfinal class Checkout {\n    public function __construct(private ShippingRate $rate) {}\n    public function total(Cart $cart): int { return $cart->subtotal() + $this->rate->cost($cart->parcel()); }\n}"
+        },
+        {
+          "language": "python",
+          "code": "# In Python, a strategy is often just a function.\nShippingRate = Callable[[Parcel], int]\n\ndef flat_rate(p: Parcel) -> int: return 5000\ndef by_weight(p: Parcel) -> int: return p.grams * 3\n\ndef total(cart: Cart, rate: ShippingRate = flat_rate) -> int:\n    return cart.subtotal() + rate(cart.parcel())"
+        },
+        {
+          "language": "dart",
+          "code": "typedef ShippingRate = int Function(Parcel p);\n\nint flatRate(Parcel p) => 5000;\nint byWeight(Parcel p) => p.grams * 3;\n\nclass Checkout {\n  Checkout(this.rate);\n  final ShippingRate rate;\n  int total(Cart cart) => cart.subtotal + rate(cart.parcel);\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "Binding an interface to an implementation in the container (`$this->app->bind(EventPusher::class, RedisEventPusher::class)`), or contextual binding with `when()->needs()->give()`, swaps strategies without touching the classes that use them.",
+          "url": "https://laravel.com/docs/container#binding-interfaces-to-implementations"
+        }
+      ],
+      "related": [
+        "state",
+        "template-method",
+        "bridge",
+        "command",
+        "decorator"
+      ],
+      "links": [
+        {
+          "label": "Strategy on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/strategy"
+        }
+      ]
+    },
+    {
+      "id": "template-method",
+      "title": "Template Method",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Define the skeleton of an algorithm in a base class and let subclasses override specific steps.",
+      "problem": "Several classes run nearly the same algorithm with small differences, so the shared steps are duplicated.",
+      "solution": "Put the algorithm in a base-class method that calls step methods. Steps are abstract or have defaults (hooks) that subclasses override.",
+      "whenToUse": [
+        "Several classes share an algorithm's structure but differ in some steps.",
+        "You want to let clients extend only particular steps."
+      ],
+      "pros": [
+        "Shared code lives in one place.",
+        "Clients override only what differs."
+      ],
+      "cons": [
+        "Inheritance-based: rigid, and subclasses can break the skeleton's assumptions (LSP).",
+        "Harder to follow as the number of steps grows."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "    abstract class Importer {\n        final public function run(string $path): int {          // the template method\n            $rows = $this->parse(file_get_contents($path));\n            $valid = array_filter($rows, fn ($r) => $this->validate($r));\n            return $this->save($valid);\n        }\n        abstract protected function parse(string $raw): array;\n        protected function validate(array $row): bool { return true; }   // hook\n        abstract protected function save(array $rows): int;\n    }\n\n    final class CsvCustomerImporter extends Importer {\n        protected function parse(string $raw): array {\n            return array_map('str_getcsv', explode(\"\n\", trim($raw)));\n        }\n        protected function save(array $rows): int { /* insert customers */ return count($rows); }\n    }"
+        },
+        {
+          "language": "python",
+          "code": "class Importer(ABC):\n    def run(self, path: str) -> int:              # the template method\n        rows = self.parse(Path(path).read_text())\n        return self.save([r for r in rows if self.validate(r)])\n\n    @abstractmethod\n    def parse(self, raw: str) -> list[dict]: ...\n    def validate(self, row: dict) -> bool: return True    # hook\n    @abstractmethod\n    def save(self, rows: list[dict]) -> int: ..."
+        },
+        {
+          "language": "dart",
+          "code": "abstract class Importer {\n  Future<int> run(String path) async { // the template method\n    final rows = parse(await File(path).readAsString());\n    return save(rows.where(validate).toList());\n  }\n\n  List<Map<String, String>> parse(String raw);\n  bool validate(Map<String, String> row) => true; // hook\n  Future<int> save(List<Map<String, String>> rows);\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Django",
+          "note": "Class-based generic views are built from overridable hooks. For example, `get_form` calls `get_form_class`, which by default returns the `form_class` attribute. Subclasses override just the step they need.",
+          "url": "https://docs.djangoproject.com/en/stable/topics/class-based-views/intro/"
+        }
+      ],
+      "related": [
+        "factory-method",
+        "strategy"
+      ],
+      "links": [
+        {
+          "label": "Template Method on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/template-method"
+        }
+      ]
+    },
+    {
+      "id": "visitor",
+      "title": "Visitor",
+      "category": "Design Patterns",
+      "group": "Behavioral",
+      "summary": "Add new operations to a set of classes without changing them, by moving each operation into a visitor object.",
+      "problem": "You keep adding unrelated operations (export to XML, compute tax, render) to a stable hierarchy of element classes, bloating them.",
+      "solution": "Elements implement `accept(visitor)` and call back the visitor method for their type (double dispatch). Each operation is a visitor implementing one method per element type.",
+      "whenToUse": [
+        "You need many unrelated operations over a stable object structure.",
+        "The element classes rarely change, but operations change often."
+      ],
+      "pros": [
+        "New operations without touching element classes (OCP).",
+        "Related behaviour grouped in one class."
+      ],
+      "cons": [
+        "Adding a new element type means updating every visitor.",
+        "Visitors may need access to element internals."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface ShapeVisitor { public function circle(Circle $c): mixed; public function rect(Rect $r): mixed; }\ninterface Shape { public function accept(ShapeVisitor $v): mixed; }\n\nfinal class Circle implements Shape {\n    public function __construct(public float $r) {}\n    public function accept(ShapeVisitor $v): mixed { return $v->circle($this); }\n}\n\nfinal class AreaVisitor implements ShapeVisitor {\n    public function circle(Circle $c): float { return M_PI * $c->r ** 2; }\n    public function rect(Rect $r): float { return $r->w * $r->h; }\n}"
+        },
+        {
+          "language": "python",
+          "code": "from functools import singledispatch\n\n# Python alternative to double dispatch: one generic function per operation.\n@singledispatch\ndef area(shape) -> float:\n    raise NotImplementedError(type(shape))\n\n@area.register\ndef _(c: Circle) -> float: return math.pi * c.r ** 2\n\n@area.register\ndef _(r: Rect) -> float: return r.w * r.h"
+        },
+        {
+          "language": "dart",
+          "code": "import 'dart:math';\n\nsealed class Shape {}\nclass Circle extends Shape { Circle(this.r); final double r; }\nclass Rect extends Shape { Rect(this.w, this.h); final double w, h; }\n\n// With sealed classes, an exhaustive switch replaces most visitors.\ndouble area(Shape s) => switch (s) {\n      Circle(:final r) => pi * r * r,\n      Rect(:final w, :final h) => w * h,\n    };"
+        }
+      ],
+      "inTheWild": [],
+      "related": [
+        "composite",
+        "iterator",
+        "command"
+      ],
+      "links": [
+        {
+          "label": "Visitor on refactoring.guru",
+          "url": "https://refactoring.guru/design-patterns/visitor"
+        }
+      ]
+    }
+  ]
+}

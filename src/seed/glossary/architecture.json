@@ -1,0 +1,395 @@
+{
+  "id": "architecture",
+  "title": "Architecture",
+  "description": "Application and system architecture styles. Definitions are quoted from their original sources where noted; framework notes are checked against official docs.",
+  "groups": [
+    "Application structure",
+    "Data & domain",
+    "System structure"
+  ],
+  "entries": [
+    {
+      "id": "mvc",
+      "title": "MVC (Model–View–Controller)",
+      "category": "Architecture",
+      "group": "Application structure",
+      "summary": "Separates data and rules (Model), presentation (View) and input handling (Controller), so each can change independently.",
+      "solution": "The controller receives a request, asks the model for data or to change state, and picks a view to present the result. Most server-side web frameworks use a variant of it.",
+      "pros": [
+        "Clear separation of concerns.",
+        "Views and models can be tested and reused independently."
+      ],
+      "cons": [
+        "\"Fat controllers\" are easy to end up with. Push domain logic into models or services."
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "Routes dispatch to controllers, which use Eloquent models and return Blade views (or JSON).",
+          "url": "https://laravel.com/docs/controllers"
+        }
+      ],
+      "related": [
+        "mtv",
+        "mvvm",
+        "layered-architecture",
+        "service-layer"
+      ],
+      "links": []
+    },
+    {
+      "id": "mtv",
+      "title": "MTV (Model–Template–View)",
+      "category": "Architecture",
+      "group": "Application structure",
+      "summary": "Django's naming of MVC. The *view* decides which data is shown, the *template* decides how it looks, and the framework itself plays the controller.",
+      "quote": {
+        "text": "If you're hungry for acronyms, you might say that Django is a \"MTV\" framework – that is, \"model\", \"template\", and \"view.\"",
+        "source": "Django FAQ",
+        "url": "https://docs.djangoproject.com/en/stable/faq/general/"
+      },
+      "solution": "In Django's interpretation, a view is the Python callback for a URL and describes which data you see. It usually delegates to a template, which describes how you see it. The URL dispatcher (the framework) routes requests to views.",
+      "inTheWild": [],
+      "related": [
+        "mvc",
+        "template-method"
+      ],
+      "links": []
+    },
+    {
+      "id": "mvvm",
+      "title": "MVVM (Model–View–ViewModel)",
+      "category": "Architecture",
+      "group": "Application structure",
+      "summary": "Views render UI and forward events. View models hold UI state and expose data and commands. Models (repositories and services) own the data.",
+      "solution": "Views stay free of business logic. View models transform model data for display and expose commands the view calls. Repositories are the source of truth for data, and services wrap data sources like APIs.",
+      "inTheWild": [
+        {
+          "framework": "Flutter",
+          "note": "Flutter's official architecture guide recommends MVVM: a UI layer (views + view models), a data layer (repositories + services), and an optional domain layer of use-cases added \"only when needed\".",
+          "url": "https://docs.flutter.dev/app-architecture/guide"
+        }
+      ],
+      "related": [
+        "mvc",
+        "repository",
+        "command",
+        "observer"
+      ],
+      "links": []
+    },
+    {
+      "id": "layered-architecture",
+      "title": "Layered Architecture",
+      "category": "Architecture",
+      "group": "Application structure",
+      "summary": "Organise code into horizontal layers (e.g. presentation → application/service → domain → data access), where each layer only depends on the ones below it.",
+      "pros": [
+        "Easy to understand and widely familiar.",
+        "Layers can be replaced or tested in isolation."
+      ],
+      "cons": [
+        "Changes to a feature often cut across every layer.",
+        "Domain logic can leak into services, leaving an 'anaemic' domain."
+      ],
+      "inTheWild": [],
+      "related": [
+        "clean-architecture",
+        "hexagonal-architecture",
+        "service-layer",
+        "separation-of-concerns"
+      ],
+      "links": []
+    },
+    {
+      "id": "clean-architecture",
+      "title": "Clean Architecture",
+      "category": "Architecture",
+      "group": "Application structure",
+      "summary": "Arrange code in concentric circles with business rules at the centre and frameworks, UI and databases at the edge, with dependencies only pointing inward.",
+      "quote": {
+        "text": "This rule says that source code dependencies can only point inwards.",
+        "source": "Robert C. Martin, The Clean Architecture (the Dependency Rule)",
+        "url": "https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html"
+      },
+      "solution": "The circles, inside out: Entities, Use Cases, Interface Adapters, Frameworks and Drivers. Inner circles know nothing about outer ones. They define interfaces that outer layers implement (dependency inversion).",
+      "pros": [
+        "Business rules are independent of frameworks, UI and database.",
+        "Core logic is easy to unit test."
+      ],
+      "cons": [
+        "More interfaces and mapping code.",
+        "Overkill for CRUD-heavy apps."
+      ],
+      "inTheWild": [],
+      "related": [
+        "hexagonal-architecture",
+        "dependency-inversion-principle",
+        "layered-architecture",
+        "repository"
+      ],
+      "links": []
+    },
+    {
+      "id": "hexagonal-architecture",
+      "title": "Hexagonal Architecture (Ports & Adapters)",
+      "category": "Architecture",
+      "group": "Application structure",
+      "summary": "The application core talks to the outside world only through ports (interfaces). Adapters plug specific technologies (web, CLI, DB, tests) into those ports.",
+      "quote": {
+        "text": "Allow an application to equally be driven by users, programs, automated test or batch scripts, and to be developed and tested in isolation from its eventual run-time devices and databases.",
+        "source": "Alistair Cockburn, Hexagonal Architecture (intent)",
+        "url": "https://alistair.cockburn.us/hexagonal-architecture/"
+      },
+      "solution": "A port is a purposeful conversation the app has with the outside, expressed as an API. An adapter translates between a port and a specific technology, such as an HTTP controller, a database gateway or a test harness.",
+      "pros": [
+        "Swap infrastructure without touching the core.",
+        "Drive the whole app from tests."
+      ],
+      "cons": [
+        "Extra indirection for simple apps."
+      ],
+      "inTheWild": [],
+      "related": [
+        "clean-architecture",
+        "adapter",
+        "dependency-inversion-principle"
+      ],
+      "links": []
+    },
+    {
+      "id": "repository",
+      "title": "Repository",
+      "category": "Architecture",
+      "group": "Data & domain",
+      "summary": "A collection-like interface for loading and saving domain objects that hides how they're stored.",
+      "quote": {
+        "text": "Mediates between the domain and data mapping layers using a collection-like interface for accessing domain objects.",
+        "source": "Martin Fowler, Patterns of Enterprise Application Architecture",
+        "url": "https://martinfowler.com/eaaCatalog/repository.html"
+      },
+      "pros": [
+        "Domain code doesn't depend on the ORM/SQL.",
+        "Easy to swap with an in-memory fake in tests."
+      ],
+      "cons": [
+        "With an Active Record ORM it can become a thin pass-through that adds little."
+      ],
+      "examples": [
+        {
+          "language": "php",
+          "code": "interface InvoiceRepository {\n    public function find(InvoiceId $id): ?Invoice;\n    public function overdue(\\DateTimeImmutable $asOf): array;\n    public function save(Invoice $invoice): void;\n}"
+        },
+        {
+          "language": "python",
+          "code": "class InvoiceRepository(Protocol):\n    def find(self, invoice_id: int) -> Invoice | None: ...\n    def overdue(self, as_of: date) -> list[Invoice]: ...\n    def save(self, invoice: Invoice) -> None: ..."
+        },
+        {
+          "language": "dart",
+          "code": "abstract interface class InvoiceRepository {\n  Future<Invoice?> find(int id);\n  Future<List<Invoice>> overdue(DateTime asOf);\n  Future<void> save(Invoice invoice);\n}"
+        }
+      ],
+      "inTheWild": [
+        {
+          "framework": "Flutter",
+          "note": "In the architecture guide, \"Repository classes are the source of truth for your model data\". They poll services, cache, handle errors and turn raw data into domain models.",
+          "url": "https://docs.flutter.dev/app-architecture/guide"
+        }
+      ],
+      "related": [
+        "active-record",
+        "service-layer",
+        "clean-architecture",
+        "decorator"
+      ],
+      "links": []
+    },
+    {
+      "id": "active-record",
+      "title": "Active Record",
+      "category": "Architecture",
+      "group": "Data & domain",
+      "summary": "Each object wraps a database row and knows how to load, save and delete itself, alongside its domain logic.",
+      "quote": {
+        "text": "An object that wraps a row in a database table or view, encapsulates the database access, and adds domain logic on that data.",
+        "source": "Martin Fowler, Patterns of Enterprise Application Architecture",
+        "url": "https://martinfowler.com/eaaCatalog/activeRecord.html"
+      },
+      "pros": [
+        "Very little code for CRUD.",
+        "Intuitive: the model is the table row."
+      ],
+      "cons": [
+        "Domain logic is coupled to persistence.",
+        "Large models can become god objects."
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "Eloquent works this way. The docs describe it as an ORM where \"each database table has a corresponding 'Model'\" used to retrieve, insert, update and delete records (e.g. `$user->save()`).",
+          "url": "https://laravel.com/docs/eloquent"
+        }
+      ],
+      "related": [
+        "repository",
+        "large-class"
+      ],
+      "links": []
+    },
+    {
+      "id": "service-layer",
+      "title": "Service Layer",
+      "category": "Architecture",
+      "group": "Data & domain",
+      "summary": "A layer of application services that defines the operations your app offers (e.g. `PlaceOrder`, `RefundPayment`) and coordinates domain objects, transactions and side effects.",
+      "quote": {
+        "text": "Defines an application's boundary with a layer of services that establishes a set of available operations",
+        "source": "Martin Fowler, Patterns of Enterprise Application Architecture (excerpt)",
+        "url": "https://martinfowler.com/eaaCatalog/serviceLayer.html"
+      },
+      "pros": [
+        "Controllers, CLI commands and jobs share one implementation.",
+        "Clear place for transactions and orchestration."
+      ],
+      "cons": [
+        "Can absorb all logic, leaving models as plain data (anaemic domain)."
+      ],
+      "inTheWild": [],
+      "related": [
+        "facade",
+        "repository",
+        "layered-architecture",
+        "mvc"
+      ],
+      "links": []
+    },
+    {
+      "id": "dependency-injection",
+      "title": "Dependency Injection",
+      "category": "Architecture",
+      "group": "Data & domain",
+      "summary": "Objects receive their collaborators from outside (usually through the constructor) instead of creating them, so implementations can be swapped and mocked.",
+      "pros": [
+        "Loose coupling and easy testing.",
+        "A container can manage lifetimes (singleton, per-request)."
+      ],
+      "cons": [
+        "Indirection: harder to find which implementation runs.",
+        "Containers can hide over-large constructors."
+      ],
+      "inTheWild": [
+        {
+          "framework": "Laravel",
+          "note": "The service container is \"a powerful tool for managing class dependencies and performing dependency injection\". Controllers, listeners, middleware and jobs get dependencies auto-injected by type-hint.",
+          "url": "https://laravel.com/docs/container"
+        }
+      ],
+      "related": [
+        "dependency-inversion-principle",
+        "singleton",
+        "strategy"
+      ],
+      "links": []
+    },
+    {
+      "id": "cqrs",
+      "title": "CQRS",
+      "category": "Architecture",
+      "group": "Data & domain",
+      "summary": "Command Query Responsibility Segregation: use one model to change data and a different model to read it.",
+      "quote": {
+        "text": "use a different model to update information than the model you use to read information",
+        "source": "Martin Fowler, CQRS",
+        "url": "https://martinfowler.com/bliki/CQRS.html"
+      },
+      "solution": "Fowler cautions that for most systems CQRS adds risky complexity, and that it should be applied to specific parts of a system rather than the whole.",
+      "pros": [
+        "Read and write sides can be optimised and scaled separately."
+      ],
+      "cons": [
+        "Significant extra complexity.",
+        "Often paired with eventual consistency."
+      ],
+      "inTheWild": [],
+      "related": [
+        "event-sourcing",
+        "separate-query-from-modifier"
+      ],
+      "links": []
+    },
+    {
+      "id": "event-sourcing",
+      "title": "Event Sourcing",
+      "category": "Architecture",
+      "group": "Data & domain",
+      "summary": "Store every change as an immutable event and derive current state by replaying them, instead of storing only the latest state.",
+      "quote": {
+        "text": "Capture all changes to an application state as a sequence of events.",
+        "source": "Martin Fowler, Event Sourcing",
+        "url": "https://martinfowler.com/eaaDev/EventSourcing.html"
+      },
+      "pros": [
+        "Full audit history.",
+        "Rebuild state or new read models by replaying."
+      ],
+      "cons": [
+        "Event schema evolution is hard.",
+        "More infrastructure (projections, snapshots)."
+      ],
+      "inTheWild": [],
+      "related": [
+        "cqrs",
+        "observer",
+        "memento"
+      ],
+      "links": []
+    },
+    {
+      "id": "modular-monolith",
+      "title": "Modular Monolith",
+      "category": "Architecture",
+      "group": "System structure",
+      "summary": "One deployable application, split internally into modules with clear boundaries and explicit interfaces between them.",
+      "pros": [
+        "Simple deployment and debugging.",
+        "Module boundaries make a later split into services possible."
+      ],
+      "cons": [
+        "Boundaries need discipline (or tooling) to stay enforced."
+      ],
+      "inTheWild": [],
+      "related": [
+        "microservices",
+        "separation-of-concerns"
+      ],
+      "links": []
+    },
+    {
+      "id": "microservices",
+      "title": "Microservices",
+      "category": "Architecture",
+      "group": "System structure",
+      "summary": "Build one application as a suite of small, independently deployable services, organised around business capabilities.",
+      "quote": {
+        "text": "the microservice architectural style is an approach to developing a single application as a suite of small services, each running in its own process and communicating with lightweight mechanisms, often an HTTP resource API.",
+        "source": "James Lewis & Martin Fowler, Microservices",
+        "url": "https://martinfowler.com/articles/microservices.html"
+      },
+      "pros": [
+        "Independent deployment and scaling.",
+        "Teams own services end to end."
+      ],
+      "cons": [
+        "Distributed-systems complexity: network failures, data consistency, observability.",
+        "Operational overhead."
+      ],
+      "inTheWild": [],
+      "related": [
+        "modular-monolith",
+        "twelve-factor-processes",
+        "twelve-factor-port-binding"
+      ],
+      "links": []
+    }
+  ]
+}

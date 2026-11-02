@@ -1,0 +1,353 @@
+{
+  "id": "principles",
+  "title": "Principles & Best Practices",
+  "description": "SOLID, general design principles and the Twelve-Factor App methodology.",
+  "groups": [
+    "SOLID",
+    "General",
+    "Twelve-Factor App"
+  ],
+  "entries": [
+    {
+      "id": "single-responsibility-principle",
+      "title": "Single Responsibility Principle (SRP)",
+      "category": "Principles & Best Practices",
+      "group": "SOLID",
+      "summary": "A module should have one reason to change. Group code that changes for the same reasons, and separate code that changes for different reasons.",
+      "quote": {
+        "text": "Gather together the things that change for the same reasons. Separate those things that change for different reasons.",
+        "source": "Robert C. Martin, The Single Responsibility Principle",
+        "url": "https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html"
+      },
+      "solution": "Martin stresses that the principle \"is about people\": the reasons for change are the different people or roles who ask for changes.",
+      "related": [
+        "large-class",
+        "divergent-change",
+        "extract-class",
+        "separation-of-concerns"
+      ],
+      "links": []
+    },
+    {
+      "id": "open-closed-principle",
+      "title": "Open/Closed Principle (OCP)",
+      "category": "Principles & Best Practices",
+      "group": "SOLID",
+      "summary": "Software should be open for extension but closed for modification. Add behaviour by adding code (new classes or strategies), not by editing working code.",
+      "related": [
+        "strategy",
+        "decorator",
+        "replace-conditional-with-polymorphism"
+      ],
+      "links": []
+    },
+    {
+      "id": "liskov-substitution-principle",
+      "title": "Liskov Substitution Principle (LSP)",
+      "category": "Principles & Best Practices",
+      "group": "SOLID",
+      "summary": "Subtypes must be usable anywhere their base type is expected without breaking correctness. Don't strengthen preconditions or weaken guarantees in a subclass.",
+      "solution": "Named after Barbara Liskov. A classic violation is a subclass that throws on a method its parent supports, which is the Refused Bequest smell.",
+      "related": [
+        "refused-bequest",
+        "replace-inheritance-with-delegation"
+      ],
+      "links": []
+    },
+    {
+      "id": "interface-segregation-principle",
+      "title": "Interface Segregation Principle (ISP)",
+      "category": "Principles & Best Practices",
+      "group": "SOLID",
+      "summary": "Clients shouldn't be forced to depend on methods they don't use. Prefer several small, focused interfaces over one large one.",
+      "related": [
+        "extract-interface",
+        "large-class"
+      ],
+      "links": []
+    },
+    {
+      "id": "dependency-inversion-principle",
+      "title": "Dependency Inversion Principle (DIP)",
+      "category": "Principles & Best Practices",
+      "group": "SOLID",
+      "summary": "High-level policy shouldn't depend on low-level details. Both should depend on abstractions (interfaces), and the details implement them.",
+      "related": [
+        "dependency-injection",
+        "clean-architecture",
+        "hexagonal-architecture"
+      ],
+      "links": []
+    },
+    {
+      "id": "dry",
+      "title": "DRY (Don't Repeat Yourself)",
+      "category": "Principles & Best Practices",
+      "group": "General",
+      "summary": "Every piece of knowledge should have a single, authoritative representation in the system. It's about duplicated *knowledge*, not every similar-looking line of code.",
+      "solution": "From *The Pragmatic Programmer* (Hunt & Thomas). Merging code that only looks alike but changes for different reasons creates harmful coupling.",
+      "related": [
+        "duplicate-code",
+        "extract-method",
+        "single-responsibility-principle"
+      ],
+      "links": []
+    },
+    {
+      "id": "kiss",
+      "title": "KISS (Keep It Simple)",
+      "category": "Principles & Best Practices",
+      "group": "General",
+      "summary": "Prefer the simplest design that solves the problem. Complexity should be justified by an actual need.",
+      "related": [
+        "yagni",
+        "speculative-generality"
+      ],
+      "links": []
+    },
+    {
+      "id": "yagni",
+      "title": "YAGNI (You Aren't Gonna Need It)",
+      "category": "Principles & Best Practices",
+      "group": "General",
+      "summary": "Don't build a capability now because you think you'll need it later. Build it when you actually do.",
+      "quote": {
+        "text": "Yagni only applies to capabilities built into the software to support a presumptive feature, it does not apply to effort to make the software easier to modify.",
+        "source": "Martin Fowler, Yagni",
+        "url": "https://martinfowler.com/bliki/Yagni.html"
+      },
+      "solution": "Refactoring to keep code easy to change is not a YAGNI violation. Speculative features and abstractions are.",
+      "related": [
+        "kiss",
+        "speculative-generality"
+      ],
+      "links": []
+    },
+    {
+      "id": "law-of-demeter",
+      "title": "Law of Demeter",
+      "category": "Principles & Best Practices",
+      "group": "General",
+      "summary": "\"Talk only to your immediate friends\": a method should call methods on itself, its parameters, objects it creates and its direct fields, not reach through chains of other objects.",
+      "related": [
+        "message-chains",
+        "hide-delegate",
+        "feature-envy"
+      ],
+      "links": []
+    },
+    {
+      "id": "composition-over-inheritance",
+      "title": "Composition over Inheritance",
+      "category": "Principles & Best Practices",
+      "group": "General",
+      "summary": "Build behaviour by combining small objects rather than through deep class hierarchies, which are rigid and tightly coupled.",
+      "related": [
+        "decorator",
+        "strategy",
+        "replace-inheritance-with-delegation",
+        "composite"
+      ],
+      "links": []
+    },
+    {
+      "id": "separation-of-concerns",
+      "title": "Separation of Concerns",
+      "category": "Principles & Best Practices",
+      "group": "General",
+      "summary": "Divide a program into distinct parts that each address one concern (UI, domain rules, persistence, I/O), so they can change independently.",
+      "related": [
+        "single-responsibility-principle",
+        "layered-architecture",
+        "mvc"
+      ],
+      "links": []
+    },
+    {
+      "id": "fail-fast",
+      "title": "Fail Fast",
+      "category": "Principles & Best Practices",
+      "group": "General",
+      "summary": "Detect invalid states and inputs as early as possible and stop loudly, instead of continuing with bad data that fails confusingly later.",
+      "related": [
+        "introduce-assertion",
+        "replace-nested-conditional-with-guard-clauses"
+      ],
+      "links": []
+    },
+    {
+      "id": "twelve-factor-codebase",
+      "title": "I. Codebase",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "One codebase tracked in revision control, many deploys.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Codebase",
+          "url": "https://12factor.net/codebase"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-dependencies",
+      "title": "II. Dependencies",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Explicitly declare and isolate dependencies.",
+      "solution": "composer.json + composer.lock, requirements.txt / pyproject.toml, pubspec.yaml + pubspec.lock.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Dependencies",
+          "url": "https://12factor.net/dependencies"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-config",
+      "title": "III. Config",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Store config in the environment.",
+      "solution": "Credentials and per-environment settings belong in environment variables (Laravel's and Django's `.env` conventions), not in code.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Config",
+          "url": "https://12factor.net/config"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-backing-services",
+      "title": "IV. Backing services",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Treat backing services as attached resources.",
+      "solution": "Databases, Redis, mail and queues are swapped by changing config (a URL/credentials), not code.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Backing services",
+          "url": "https://12factor.net/backing-services"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-build-release-run",
+      "title": "V. Build, release, run",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Strictly separate build and run stages.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Build, release, run",
+          "url": "https://12factor.net/build-release-run"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-processes",
+      "title": "VI. Processes",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Execute the app as one or more stateless processes.",
+      "solution": "Keep no sticky state in memory or on local disk between requests. Use a database, cache or object storage.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Processes",
+          "url": "https://12factor.net/processes"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-port-binding",
+      "title": "VII. Port binding",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Export services via port binding.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Port binding",
+          "url": "https://12factor.net/port-binding"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-concurrency",
+      "title": "VIII. Concurrency",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Scale out via the process model.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Concurrency",
+          "url": "https://12factor.net/concurrency"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-disposability",
+      "title": "IX. Disposability",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Maximize robustness with fast startup and graceful shutdown.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Disposability",
+          "url": "https://12factor.net/disposability"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-dev-prod-parity",
+      "title": "X. Dev/prod parity",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Keep development, staging, and production as similar as possible.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Dev/prod parity",
+          "url": "https://12factor.net/dev-prod-parity"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-logs",
+      "title": "XI. Logs",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Treat logs as event streams.",
+      "solution": "Write to stdout/stderr and let the environment route and store logs.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Logs",
+          "url": "https://12factor.net/logs"
+        }
+      ]
+    },
+    {
+      "id": "twelve-factor-admin-processes",
+      "title": "XII. Admin processes",
+      "category": "Principles & Best Practices",
+      "group": "Twelve-Factor App",
+      "summary": "Run admin/management tasks as one-off processes.",
+      "solution": "Migrations and one-off scripts (`php artisan migrate`, `python manage.py migrate`) run against the same release and config as the app.",
+      "related": [],
+      "links": [
+        {
+          "label": "12factor.net: Admin processes",
+          "url": "https://12factor.net/admin-processes"
+        }
+      ]
+    }
+  ]
+}

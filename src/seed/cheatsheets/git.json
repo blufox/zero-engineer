@@ -1,0 +1,383 @@
+{
+  "id": "git",
+  "title": "Git",
+  "description": "Everyday commands for branching, history, undoing and remotes. Every flag checked against the git 2.43 man pages.",
+  "tags": [
+    "vcs",
+    "terminal"
+  ],
+  "sections": [
+    {
+      "title": "Setup & config",
+      "items": [
+        {
+          "keys": [
+            "git config --global user.name \"Name\""
+          ],
+          "description": "set your commit name"
+        },
+        {
+          "keys": [
+            "git config --global user.email \"me@x.com\""
+          ],
+          "description": "set your commit email"
+        },
+        {
+          "keys": [
+            "git config --list --show-origin"
+          ],
+          "description": "show all config and where each value comes from"
+        },
+        {
+          "keys": [
+            "git init"
+          ],
+          "description": "create a repository in the current folder"
+        },
+        {
+          "keys": [
+            "git clone <url> [dir]"
+          ],
+          "description": "clone a remote repository"
+        }
+      ]
+    },
+    {
+      "title": "Status & diff",
+      "items": [
+        {
+          "keys": [
+            "git status -sb"
+          ],
+          "description": "short status with branch info"
+        },
+        {
+          "keys": [
+            "git diff"
+          ],
+          "description": "unstaged changes"
+        },
+        {
+          "keys": [
+            "git diff --staged"
+          ],
+          "description": "staged changes (what will be committed)"
+        },
+        {
+          "keys": [
+            "git diff main...feature"
+          ],
+          "description": "changes on feature since it branched from main"
+        },
+        {
+          "keys": [
+            "git diff --stat"
+          ],
+          "description": "summary of changed files"
+        }
+      ]
+    },
+    {
+      "title": "Staging & committing",
+      "items": [
+        {
+          "keys": [
+            "git add -p"
+          ],
+          "description": "stage changes hunk by hunk (interactive)"
+        },
+        {
+          "keys": [
+            "git add -A"
+          ],
+          "description": "stage all changes, including deletions"
+        },
+        {
+          "keys": [
+            "git restore --staged <file>"
+          ],
+          "description": "unstage a file (keep changes)"
+        },
+        {
+          "keys": [
+            "git commit -m \"msg\""
+          ],
+          "description": "commit staged changes"
+        },
+        {
+          "keys": [
+            "git commit --amend --no-edit"
+          ],
+          "description": "add staged changes to the last commit"
+        },
+        {
+          "keys": [
+            "git commit --amend -m \"msg\""
+          ],
+          "description": "reword the last commit"
+        }
+      ]
+    },
+    {
+      "title": "Branches",
+      "items": [
+        {
+          "keys": [
+            "git switch -c <branch>"
+          ],
+          "description": "create and switch to a new branch"
+        },
+        {
+          "keys": [
+            "git switch <branch>",
+            "git switch -"
+          ],
+          "description": "switch branch / to previous branch"
+        },
+        {
+          "keys": [
+            "git branch -vv"
+          ],
+          "description": "list branches with upstream and last commit"
+        },
+        {
+          "keys": [
+            "git branch -d <branch>",
+            "git branch -D <branch>"
+          ],
+          "description": "delete merged branch / force delete"
+        },
+        {
+          "keys": [
+            "git branch -m <new>"
+          ],
+          "description": "rename current branch"
+        },
+        {
+          "keys": [
+            "git merge --no-ff <branch>"
+          ],
+          "description": "merge, always creating a merge commit"
+        },
+        {
+          "keys": [
+            "git rebase main"
+          ],
+          "description": "replay current branch on top of main"
+        },
+        {
+          "keys": [
+            "git rebase -i HEAD~3"
+          ],
+          "description": "squash, reorder or reword the last 3 commits"
+        },
+        {
+          "keys": [
+            "git rebase --continue",
+            "git rebase --abort"
+          ],
+          "description": "continue / abandon a rebase in progress"
+        },
+        {
+          "keys": [
+            "git cherry-pick <sha>"
+          ],
+          "description": "apply one commit onto the current branch"
+        }
+      ]
+    },
+    {
+      "title": "History",
+      "items": [
+        {
+          "keys": [
+            "git log --oneline --graph --all"
+          ],
+          "description": "compact graph of all branches"
+        },
+        {
+          "keys": [
+            "git log -p <file>"
+          ],
+          "description": "history of a file with diffs"
+        },
+        {
+          "keys": [
+            "git log -S \"text\""
+          ],
+          "description": "commits that added or removed \"text\" (pickaxe)"
+        },
+        {
+          "keys": [
+            "git log --author=\"name\" --since=\"2 weeks ago\""
+          ],
+          "description": "filter history"
+        },
+        {
+          "keys": [
+            "git show <sha>"
+          ],
+          "description": "show a commit"
+        },
+        {
+          "keys": [
+            "git blame -w <file>"
+          ],
+          "description": "who changed each line (ignore whitespace)"
+        },
+        {
+          "keys": [
+            "git reflog"
+          ],
+          "description": "every position HEAD has been (recover \"lost\" commits)"
+        }
+      ]
+    },
+    {
+      "title": "Undoing",
+      "items": [
+        {
+          "keys": [
+            "git restore <file>"
+          ],
+          "description": "discard unstaged changes to a file"
+        },
+        {
+          "keys": [
+            "git reset --soft HEAD~1"
+          ],
+          "description": "undo last commit, keep changes staged"
+        },
+        {
+          "keys": [
+            "git reset HEAD~1"
+          ],
+          "description": "undo last commit, keep changes unstaged"
+        },
+        {
+          "keys": [
+            "git reset --hard HEAD~1"
+          ],
+          "description": "undo last commit and DISCARD its changes"
+        },
+        {
+          "keys": [
+            "git revert <sha>"
+          ],
+          "description": "new commit that undoes <sha> (safe on shared branches)"
+        },
+        {
+          "keys": [
+            "git clean -fdn",
+            "git clean -fd"
+          ],
+          "description": "preview / delete untracked files and dirs"
+        }
+      ]
+    },
+    {
+      "title": "Stash",
+      "items": [
+        {
+          "keys": [
+            "git stash push -m \"msg\""
+          ],
+          "description": "stash working changes"
+        },
+        {
+          "keys": [
+            "git stash -u"
+          ],
+          "description": "stash including untracked files"
+        },
+        {
+          "keys": [
+            "git stash list"
+          ],
+          "description": "list stashes"
+        },
+        {
+          "keys": [
+            "git stash pop",
+            "git stash apply stash@{1}"
+          ],
+          "description": "apply and drop / apply a specific stash"
+        },
+        {
+          "keys": [
+            "git stash drop stash@{0}"
+          ],
+          "description": "delete a stash"
+        }
+      ]
+    },
+    {
+      "title": "Remotes",
+      "items": [
+        {
+          "keys": [
+            "git remote -v"
+          ],
+          "description": "list remotes"
+        },
+        {
+          "keys": [
+            "git fetch --prune"
+          ],
+          "description": "fetch and remove deleted remote branches"
+        },
+        {
+          "keys": [
+            "git pull --rebase"
+          ],
+          "description": "pull, rebasing local commits on top"
+        },
+        {
+          "keys": [
+            "git push -u origin <branch>"
+          ],
+          "description": "push and set upstream"
+        },
+        {
+          "keys": [
+            "git push --force-with-lease"
+          ],
+          "description": "force push, but refuse if the remote changed"
+        },
+        {
+          "keys": [
+            "git push origin --delete <branch>"
+          ],
+          "description": "delete a remote branch"
+        }
+      ]
+    },
+    {
+      "title": "Tags",
+      "items": [
+        {
+          "keys": [
+            "git tag -a v1.2.0 -m \"msg\""
+          ],
+          "description": "create an annotated tag"
+        },
+        {
+          "keys": [
+            "git push origin --tags"
+          ],
+          "description": "push all tags"
+        },
+        {
+          "keys": [
+            "git describe --tags"
+          ],
+          "description": "nearest tag to HEAD"
+        }
+      ]
+    }
+  ],
+  "source": {
+    "name": "Git reference manual",
+    "url": "https://git-scm.com/docs"
+  }
+}
