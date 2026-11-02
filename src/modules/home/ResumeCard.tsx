@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { GitBranch, History } from "lucide-react";
+import { GitBranch, GraduationCap, History } from "lucide-react";
 import { useSettings } from "../../lib/settings";
 import { isDirty, type RepoInfo } from "../../lib/system";
 import { loadRepos } from "../repos/ReposPage";
 import { readAllNotes, type RepoNote } from "../repos/notes";
 import { relative } from "../tools/time";
+import { countToday } from "../review/store";
 
 interface Item { repo: RepoInfo; note?: RepoNote; at: number }
 
@@ -25,6 +26,25 @@ export function rankRecent(list: RepoInfo[], notes: RepoNote[], limit = 3): Item
     .filter((i) => i.at > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
+}
+
+/** "12 flashcards to review today" link; hidden when nothing is due or no decks are on. */
+export function DueCard() {
+  const { settings } = useSettings();
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    let live = true;
+    countToday(settings.review).then((c) => live && setN(c)).catch(() => {});
+    return () => { live = false; };
+  }, [settings.review]);
+  if (!n) return null;
+  return (
+    <Link to="/review" className="mb-3 flex items-center gap-2 rounded-lg border border-line bg-surface px-4 py-3 text-sm transition hover:border-accent">
+      <GraduationCap size={16} className="text-accent" />
+      <span><b>{n}</b> flashcard{n > 1 && "s"} to review today</span>
+      <span className="ml-auto text-xs text-muted">Review →</span>
+    </Link>
+  );
 }
 
 export default function ResumeCard() {

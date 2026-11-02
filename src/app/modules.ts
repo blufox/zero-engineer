@@ -1,6 +1,7 @@
 import {
   Database,
   FolderGit2,
+  GraduationCap,
   House,
   Keyboard,
   Library,
@@ -38,6 +39,8 @@ export const MODULES: ModuleDef[] = [
     description: "Every git repo in your workspace with its status" },
   { id: "servers", label: "Running Servers", path: "/servers", icon: Server,
     description: "Apache, MySQL, artisan, runserver and other listeners" },
+  { id: "review", label: "Review", path: "/review", icon: GraduationCap,
+    description: "Flashcards from your cheat sheets and glossary, spaced over days" },
   { id: "databases", label: "Databases", path: "/databases", icon: Database,
     description: "Snapshot and restore local MySQL, Postgres and SQLite databases" },
   { id: "logs", label: "Logs", path: "/logs", icon: ScrollText,

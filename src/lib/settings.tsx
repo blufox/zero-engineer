@@ -39,6 +39,8 @@ export interface Settings {
   dotfiles: string[];
   /** Let DB snapshots be committed with the backup repo (off: a .gitignore keeps them out). */
   dbSnapshotsInGit: boolean;
+  /** Flashcards: enabled deck ids ("cs:<sheet>", "gl:<category>") and new cards per day. */
+  review: { decks: string[]; newPerDay: number };
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -54,6 +56,7 @@ export const DEFAULT_SETTINGS: Settings = {
   excludedPaths: ["node_modules", "vendor"],
   dotfiles: ["~/.zshrc", "~/.gitconfig", "~/.oh-my-zsh/custom", "~/.ssh/config"],
   dbSnapshotsInGit: false,
+  review: { decks: [], newPerDay: 10 },
 };
 
 const SETTINGS_FILE = "settings.json";

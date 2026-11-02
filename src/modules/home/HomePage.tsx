@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { MODULES } from "../../app/modules";
 import { Kbd, PageHeader } from "../../components/ui";
-import ResumeCard from "./ResumeCard";
+import ResumeCard, { DueCard } from "./ResumeCard";
 
 export default function HomePage() {
   const modules = MODULES.filter((m) => m.id !== "home" && !m.footer);
@@ -12,6 +12,7 @@ export default function HomePage() {
       <p className="-mt-3 mb-6 text-sm text-muted">
         Press <Kbd>Ctrl K</Kbd> to search everything: shortcuts, snippets, patterns, repos and tools.
       </p>
+      <DueCard />
       <ResumeCard />
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         {modules.map((m) => {
