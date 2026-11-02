@@ -41,6 +41,8 @@ export interface Settings {
   dbSnapshotsInGit: boolean;
   /** Flashcards: enabled deck ids ("cs:<sheet>", "gl:<category>") and new cards per day. */
   review: { decks: string[]; newPerDay: number };
+  /** Machine bootstrap: "<section>:<name>" → ticked or not, where you changed the default. */
+  bootstrapOverrides: Record<string, boolean>;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -57,6 +59,7 @@ export const DEFAULT_SETTINGS: Settings = {
   dotfiles: ["~/.zshrc", "~/.gitconfig", "~/.oh-my-zsh/custom", "~/.ssh/config"],
   dbSnapshotsInGit: false,
   review: { decks: [], newPerDay: 10 },
+  bootstrapOverrides: {},
 };
 
 const SETTINGS_FILE = "settings.json";

@@ -227,14 +227,14 @@ fn collect(path: &Path, home: &Path, out: &mut Collected) {
 }
 
 /// `<backup-dir>/dotfiles` when a backup folder is chosen, else the legacy `<data-dir>/configs`.
-fn configs_dir(state: &State<ConfigState>) -> CmdResult<PathBuf> {
+pub(crate) fn configs_dir(state: &State<ConfigState>) -> CmdResult<PathBuf> {
     match backup_root(state)? {
         Some(b) => Ok(b.join("dotfiles")),
         None => Ok(data_root(state)?.join("configs")),
     }
 }
 
-fn load_manifest(dir: &Path) -> Manifest {
+pub(crate) fn load_manifest(dir: &Path) -> Manifest {
     fs::read_to_string(dir.join(MANIFEST)).ok().and_then(|s| serde_json::from_str(&s).ok()).unwrap_or_default()
 }
 

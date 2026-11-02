@@ -1,4 +1,5 @@
 mod backup;
+mod bootstrap;
 mod configs;
 mod context;
 mod dbsnap;
@@ -69,6 +70,9 @@ pub fn run() {
             dbsnap::db_delete,
             dbsnap::db_prune,
             dbsnap::db_clear,
+            bootstrap::bootstrap_scan,
+            bootstrap::bootstrap_preview,
+            bootstrap::bootstrap_export,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

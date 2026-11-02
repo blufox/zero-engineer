@@ -241,3 +241,19 @@ export const db = {
   prune: (slug: string, keep: number) => invoke<number>("db_prune", { slug, keep }),
   clear: (slug: string) => invoke<number>("db_clear", { slug }),
 };
+
+// ---------------------------------------------------------------------------
+// Machine bootstrap
+// ---------------------------------------------------------------------------
+
+export interface BootstrapItem { name: string; selected: boolean; extra: string | null }
+export interface BootstrapSection { id: string; items: BootstrapItem[]; note: string | null }
+export interface BootstrapScan { hostname: string; scannedAt: number; nodeVersion: string | null; sections: BootstrapSection[] }
+export interface BootstrapPreview { script: string; previous: string | null; secrets: SecretHit[]; outDir: string }
+
+export const bootstrap = {
+  scan: () => invoke<BootstrapScan>("bootstrap_scan"),
+  preview: (scan: BootstrapScan) => invoke<BootstrapPreview>("bootstrap_preview", { scan }),
+  /** Returns the path of the written bootstrap.sh. */
+  export: (scan: BootstrapScan) => invoke<string>("bootstrap_export", { scan }),
+};

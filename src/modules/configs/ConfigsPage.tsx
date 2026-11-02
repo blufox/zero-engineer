@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { diffLines } from "diff";
+import { useCallback, useEffect, useState } from "react";
+import DiffLines from "../../components/DiffLines";
+import BootstrapCard from "./BootstrapCard";
 import { ask, open } from "@tauri-apps/plugin-dialog";
 import {
   AlertTriangle, Check, ChevronDown, ChevronRight, Copy, Download, FileText, Folder, FolderGit2, FolderOpen, HardDrive,
@@ -32,8 +33,6 @@ function Diff({ source, onClose }: { source: string; onClose: () => void }) {
   useEffect(() => {
     Promise.all([configs.backupText(source), configs.currentText(source)]).then(([old, cur]) => setTexts({ old, cur }));
   }, [source]);
-  const parts = useMemo(() => (texts ? diffLines(texts.old ?? "", texts.cur ?? "") : []), [texts]);
-  const changed = parts.some((p) => p.added || p.removed);
 
   return (
     <div className="mt-2 overflow-hidden rounded-md border border-line">
@@ -52,21 +51,7 @@ function Diff({ source, onClose }: { source: string; onClose: () => void }) {
       <pre className="selectable max-h-96 overflow-auto bg-surface p-0 font-mono text-[11.5px] leading-relaxed">
         {!texts && <div className="p-3 text-muted">Loading…</div>}
         {texts && texts.old == null && <div className="p-3 text-muted">Not exported yet. Nothing to compare with.</div>}
-        {texts && texts.old != null && !changed && <div className="p-3 text-muted">No differences.</div>}
-        {texts?.old != null && changed && parts.map((p, i) => {
-          const lines = p.value.replace(/\n$/, "").split("\n");
-          // Collapse long unchanged stretches to 3 lines of context each side.
-          const shown = !p.added && !p.removed && lines.length > 8
-            ? [...lines.slice(0, 3), `… ${lines.length - 6} unchanged lines …`, ...lines.slice(-3)]
-            : lines;
-          return shown.map((l, j) => (
-            <div key={`${i}-${j}`} className={cx("px-3",
-              p.added && "bg-accent-soft text-accent", p.removed && "bg-danger/10 text-danger",
-              l.startsWith("… ") && !p.added && !p.removed && "text-center italic text-muted")}>
-              {p.added ? "+ " : p.removed ? "− " : "  "}{l}
-            </div>
-          ));
-        })}
+        {texts?.old != null && <DiffLines oldText={texts.old} newText={texts.cur ?? ""} />}
       </pre>
     </div>
   );
@@ -495,6 +480,8 @@ export default function ConfigsPage() {
         <em> diff → copy backup</em>, or the restore commands for clones.
         {report && <> Dotfiles folder: <button onClick={() => launch.folder(report.configsDir)} className="font-mono text-accent hover:underline">{report.configsDir}</button></>}
       </p>
+
+      <BootstrapCard />
     </>
   );
 }
