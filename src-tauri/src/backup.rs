@@ -19,8 +19,10 @@ use crate::storage::{atomic_write, backup_root, data_root, ConfigState};
 /// Sub-folder of the backup folder that holds app data.
 pub const APP_DATA_DIR: &str = "zero";
 const SETTINGS: &str = "settings.json";
-const FOLDERS: &[&str] = &["snippets", "cheatsheets", "glossary"];
-const CATEGORIES: &[&str] = &["settings", "snippets", "cheatsheets", "glossary"];
+const FOLDERS: &[&str] = &["snippets", "cheatsheets", "glossary", "repo-notes", "review", "logs", "db-connections"];
+const CATEGORIES: &[&str] = &[
+    "settings", "snippets", "cheatsheets", "glossary", "repo-notes", "review", "logs", "db-connections",
+];
 const MAX_BYTES: u64 = 10 * 1024 * 1024;
 
 type CmdResult<T> = Result<T, String>;

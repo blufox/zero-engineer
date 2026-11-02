@@ -216,6 +216,7 @@ function BackupFolderCard({ backupDir, dataDir, onChange }: {
 
 const CATEGORY_LABEL: Record<string, string> = {
   settings: "Settings", snippets: "Snippets & notes", cheatsheets: "Cheat sheets", glossary: "Glossary edits",
+  "repo-notes": "Repo notes", review: "Flashcard progress", logs: "Pinned logs", "db-connections": "DB connections",
 };
 
 /** Export/import Zero's own data to/from <backupDir>/zero. */

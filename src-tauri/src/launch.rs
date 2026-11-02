@@ -71,10 +71,12 @@ fn existing_dir(path: &str) -> Result<String, String> {
 
 /// Open `path` in the configured editor (e.g. vim) inside the configured terminal.
 #[tauri::command]
-pub fn open_in_editor(path: String, editor: String, terminal: String) -> Result<(), String> {
+pub fn open_in_editor(path: String, editor: String, terminal: String, line: Option<u32>) -> Result<(), String> {
     let cwd = existing_dir(&path)?;
     let mut run: Vec<String> = editor.split_whitespace().map(String::from).collect();
     if run.is_empty() { run.push("vim".into()); }
+    // `+N file` jumps to a line in vim, nvim, nano, emacs and kakoune.
+    if let Some(n) = line.filter(|n| *n > 0) { run.push(format!("+{n}")); }
     run.push(expand_home(&path).to_string_lossy().into_owned());
     spawn_detached(&terminal_argv(&terminal, &cwd, Some(run)), &cwd)
 }

@@ -20,7 +20,7 @@ use tauri::{AppHandle, Manager, State};
 use crate::paths::expand_home;
 
 /// Sub-folders created inside a fresh data folder.
-const DATA_SUBDIRS: &[&str] = &["cheatsheets", "glossary", "snippets", "configs"];
+const DATA_SUBDIRS: &[&str] = &["cheatsheets", "glossary", "snippets", "configs", "repo-notes", "review", "logs", "db-connections"];
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

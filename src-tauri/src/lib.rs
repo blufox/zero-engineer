@@ -1,5 +1,7 @@
 mod backup;
 mod configs;
+mod context;
+mod envfile;
 mod files;
 mod launch;
 mod paths;
@@ -53,6 +55,8 @@ pub fn run() {
             backup::app_data_status,
             backup::export_app_data,
             backup::import_app_data,
+            context::repo_context,
+            context::env_drift_all,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

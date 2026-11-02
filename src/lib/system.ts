@@ -40,8 +40,8 @@ export const repos = {
 };
 
 export const launch = {
-  editor: (path: string, s: Pick<Settings, "editorCommand" | "terminalCommand">) =>
-    invoke<void>("open_in_editor", { path, editor: s.editorCommand, terminal: s.terminalCommand }),
+  editor: (path: string, s: Pick<Settings, "editorCommand" | "terminalCommand">, line?: number) =>
+    invoke<void>("open_in_editor", { path, editor: s.editorCommand, terminal: s.terminalCommand, line: line ?? null }),
   terminal: (path: string, s: Pick<Settings, "terminalCommand">) =>
     invoke<void>("open_terminal", { path, terminal: s.terminalCommand }),
   folder: (path: string) => invoke<void>("open_folder", { path }),
@@ -161,4 +161,36 @@ export const app = {
   setAutostart: (enabled: boolean) => invoke<AutostartStatus>("set_autostart", { enabled }),
   /** Returns the archive size in bytes. */
   archiveData: (dataDir: string, dest: string) => invoke<number>("archive_data", { dataDir, dest }),
+};
+
+// ---------------------------------------------------------------------------
+// Repo context ("Where was I?") and .env drift
+// ---------------------------------------------------------------------------
+
+export interface EnvDrift {
+  path: string;
+  exampleFile: string | null;
+  hasEnv: boolean;
+  missing: string[];
+  extra: string[];
+  empty: string[];
+}
+export interface CommitLine { hash: string; subject: string; date: string }
+export interface ChangedFile { path: string; status: string; modified: number }
+export interface TodoLine { file: string; line: number; text: string; source: "uncommitted" | "committed" }
+export interface RepoContext {
+  path: string;
+  branch: string | null;
+  commits: CommitLine[];
+  files: ChangedFile[];
+  stashes: string[];
+  todos: TodoLine[];
+  env: EnvDrift;
+}
+
+export const hasDrift = (d: EnvDrift) => !!d.exampleFile && (!d.hasEnv || d.missing.length > 0 || d.empty.length > 0);
+
+export const context = {
+  repo: (path: string) => invoke<RepoContext>("repo_context", { path }),
+  envDriftAll: (paths: string[]) => invoke<EnvDrift[]>("env_drift_all", { paths }),
 };

@@ -51,7 +51,7 @@ pub struct RepoInfo {
     pub error: Option<String>,
 }
 
-fn git(dir: &Path, args: &[&str]) -> Result<String, String> {
+pub(crate) fn git(dir: &Path, args: &[&str]) -> Result<String, String> {
     let out = Command::new("git")
         .arg("-C")
         .arg(dir)

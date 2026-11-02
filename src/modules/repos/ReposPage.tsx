@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowDown, ArrowUp, CloudDownload, FolderOpen, GitBranch, Globe, RefreshCw, Search, SquareTerminal, FileCode2,
+  ArrowDown, ArrowUp, CloudDownload, FolderOpen, GitBranch, Globe, KeyRound, RefreshCw, Search, SquareTerminal, FileCode2,
 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { Button, Kbd, cx } from "../../components/ui";
-import { useSettings } from "../../lib/settings";
+import { useSettings, type Settings } from "../../lib/settings";
 import { errorMessage } from "../../lib/storage";
-import { isDirty, launch, repos, type RepoInfo } from "../../lib/system";
+import { context, hasDrift, isDirty, launch, repos, type EnvDrift, type RepoInfo } from "../../lib/system";
+import RepoPanel from "./RepoPanel";
 import { Toggle } from "../tools/shared";
 import { relative } from "../tools/time";
 
@@ -16,6 +18,13 @@ let cache: RepoInfo[] | null = null;
 
 /** Last scan result (used by the command palette to avoid rescanning). */
 export const getCachedRepos = () => cache;
+
+/** Cached repos, or one scan that also fills the cache (shared by Home and the Repos page). */
+export async function loadRepos(s: Pick<Settings, "scanRoots" | "excludedPaths">): Promise<RepoInfo[]> {
+  if (cache) return cache;
+  cache = await repos.scan(s);
+  return cache;
+}
 
 const STACK_COLORS: Record<string, string> = {
   Laravel: "text-[#e5533d] bg-[#e5533d]/10",
@@ -60,6 +69,27 @@ export default function ReposPage() {
   const [rowErrors, setRowErrors] = useState<Record<string, string>>({});
   const [fetchAll, setFetchAll] = useState<{ done: number; total: number } | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const [params, setParams] = useSearchParams();
+  const selectedPath = params.get("repo");
+  const select = useCallback((path: string | null) => {
+    setParams(path ? { repo: path } : {}, { replace: true });
+  }, [setParams]);
+  const closePanel = useCallback(() => select(null), [select]);
+  const [envDrift, setEnvDrift] = useState<Record<string, EnvDrift> | null>(null);
+  const [checkingEnv, setCheckingEnv] = useState(false);
+
+  async function checkEnv() {
+    if (!list) return;
+    setCheckingEnv(true);
+    try {
+      const results = await context.envDriftAll(list.map((r) => r.path));
+      setEnvDrift(Object.fromEntries(results.map((d) => [d.path, d])));
+    } catch (e) {
+      setError(errorMessage(e));
+    } finally {
+      setCheckingEnv(false);
+    }
+  }
 
   const scan = useCallback(async () => {
     setScanning(true);
@@ -143,6 +173,7 @@ export default function ReposPage() {
           : (b.lastCommit?.date ?? "").localeCompare(a.lastCommit?.date ?? ""));
   }, [list, query, group, stack, dirtyOnly, sort]);
 
+  const selected = (list ?? []).find((r) => r.path === selectedPath) ?? null;
   const dirtyCount = (list ?? []).filter(isDirty).length;
   const aheadCount = (list ?? []).filter((r) => r.ahead > 0).length;
 
@@ -165,6 +196,9 @@ export default function ReposPage() {
               <option value="changes">Most changes</option>
               <option value="name">Name</option>
             </select>
+            <Button onClick={checkEnv} disabled={!list || checkingEnv} title="Compare .env with .env.example in every repo (key names only)">
+              <KeyRound size={14} className={cx(checkingEnv && "animate-pulse")} /> Check .env
+            </Button>
             <Button onClick={fetchEverything} disabled={!list || !!fetchAll} title="git fetch --all --prune in every repo with a remote">
               <CloudDownload size={14} className={cx(fetchAll && "animate-pulse")} />
               {fetchAll ? `Fetching ${fetchAll.done}/${fetchAll.total}` : "Fetch all"}
@@ -196,6 +230,7 @@ export default function ReposPage() {
         </div>
       </header>
 
+      <div className="flex min-h-0 flex-1">
       <div className="min-h-0 flex-1 overflow-y-auto px-8 py-4">
         {error && <p className="mb-3 rounded-md bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
         {list && visible.length === 0 && <p className="py-8 text-center text-sm text-muted">No repositories match.</p>}
@@ -205,8 +240,13 @@ export default function ReposPage() {
             const dirty = isDirty(r);
             const busy = fetching.has(r.path);
             const rowError = rowErrors[r.path] ?? r.error;
+            const drift = envDrift?.[r.path];
+            const driftCount = drift ? drift.missing.length + drift.empty.length + (drift.hasEnv ? 0 : 1) : 0;
             return (
-              <div key={r.path} className="group rounded-lg border border-line bg-surface px-4 py-3 transition hover:border-muted/50">
+              <div key={r.path}
+                onClick={(e) => { if (!(e.target as HTMLElement).closest("button, a")) select(selectedPath === r.path ? null : r.path); }}
+                className={cx("group cursor-pointer rounded-lg border bg-surface px-4 py-3 transition hover:border-muted/50",
+                  selectedPath === r.path ? "border-accent" : "border-line")}>
                 <div className="flex items-center gap-3">
                   <div className="flex min-w-0 flex-1 items-center gap-2">
                     {r.group && <span className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] text-muted">{r.group}</span>}
@@ -214,6 +254,12 @@ export default function ReposPage() {
                     {r.stacks.map((s) => (
                       <span key={s} className={cx("rounded px-1.5 py-0.5 text-[10px] font-medium", STACK_COLORS[s] ?? "bg-surface-2 text-muted")}>{s}</span>
                     ))}
+                    {drift && hasDrift(drift) && (
+                      <span className="rounded bg-warn/10 px-1.5 py-0.5 text-[10px] font-medium text-warn"
+                        title={drift.hasEnv ? `Missing: ${drift.missing.join(", ") || "none"}\nEmpty: ${drift.empty.join(", ") || "none"}` : "No .env file"}>
+                        .env {drift.hasEnv ? `${driftCount} to fix` : "missing"}
+                      </span>
+                    )}
                   </div>
                   <div className="flex shrink-0 items-center opacity-60 transition group-hover:opacity-100">
                     <IconAction title={`Open in ${settings.editorCommand}`} onClick={() => run(() => launch.editor(r.path, settings), r.path)}>
@@ -263,6 +309,8 @@ export default function ReposPage() {
             );
           })}
         </div>
+      </div>
+      {selected && <RepoPanel key={selected.path} repo={selected} onClose={closePanel} />}
       </div>
     </div>
   );
