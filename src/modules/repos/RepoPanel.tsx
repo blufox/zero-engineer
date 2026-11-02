@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Archive, FileCode2, GitCommitHorizontal, KeyRound, ListTodo, RefreshCw, StickyNote, X } from "lucide-react";
 import { Button, cx } from "../../components/ui";
 import { useSettings } from "../../lib/settings";
@@ -55,13 +56,12 @@ export default function RepoPanel({ repo, onClose, onNoteChange }: {
   onNoteChange?: (note: RepoNote | null) => void;
 }) {
   const { settings } = useSettings();
+  const navigate = useNavigate();
   const [ctx, setCtx] = useState<RepoContext | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [savedNote, setSavedNote] = useState<RepoNote | null>(null);
-  const noteRef = useRef(note);
-  noteRef.current = note;
 
   async function load() {
     setLoading(true);
@@ -198,6 +198,7 @@ export default function RepoPanel({ repo, onClose, onNoteChange }: {
       </div>
 
       <footer className="flex gap-2 border-t border-line px-5 py-3">
+        <Button onClick={() => navigate(`/logs?repo=${encodeURIComponent(repo.path)}`)}>Logs</Button>
         <Button onClick={() => launch.terminal(repo.path, settings)}>Terminal</Button>
         <Button onClick={() => launch.editor(repo.path, settings)}>Open in {settings.editorCommand.split(" ")[0]}</Button>
       </footer>

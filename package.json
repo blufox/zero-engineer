@@ -10,7 +10,8 @@
     "tauri": "tauri",
     "app": "tauri dev",
     "app:build": "tauri build",
-    "app:install": "tauri build && sudo apt install -y --reinstall ./src-tauri/target/release/bundle/deb/Zero_*_amd64.deb"
+    "app:install": "tauri build && sudo apt install -y --reinstall ./src-tauri/target/release/bundle/deb/Zero_*_amd64.deb",
+    "test": "vitest run"
   },
   "dependencies": {
     "@codemirror/commands": "^6.11.1",
@@ -59,6 +60,7 @@
     "@vitejs/plugin-react": "^6.0.2",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "vitest": "^4.1.12"
   }
 }

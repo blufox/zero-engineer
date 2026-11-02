@@ -194,3 +194,19 @@ export const context = {
   repo: (path: string) => invoke<RepoContext>("repo_context", { path }),
   envDriftAll: (paths: string[]) => invoke<EnvDrift[]>("env_drift_all", { paths }),
 };
+
+// ---------------------------------------------------------------------------
+// Logs
+// ---------------------------------------------------------------------------
+
+export interface LogSource { path: string; kind: "laravel" | "django" | "pinned"; exists: boolean; size: number; modified: number }
+export interface RepoLogs { repo: string; sources: LogSource[] }
+export interface LogChunk { text: string; offset: number; size: number; rotated: boolean; truncated: boolean }
+/** Stored at <data-dir>/logs/pinned.json. */
+export interface PinnedLogs { pinned: Record<string, string[]> }
+
+export const logs = {
+  sources: (repos: string[]) => invoke<RepoLogs[]>("log_sources", { repos }),
+  read: (path: string, offset: number | null) => invoke<LogChunk>("read_log", { path, offset }),
+  clear: (path: string) => invoke<void>("clear_log", { path }),
+};
