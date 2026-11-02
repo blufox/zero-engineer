@@ -1,5 +1,6 @@
-//! Config backup: copy tracked dotfiles into `<data-dir>/configs/` (mirroring their
-//! path relative to $HOME) and record them in `configs/manifest.json`.
+//! Config backup: copy tracked dotfiles into `<backup-dir>/dotfiles/` (or `<data-dir>/configs/`
+//! when no backup folder is chosen), mirroring their path relative to $HOME, and record
+//! them in `manifest.json` there.
 //!
 //! - Copy-only: Zero never runs git on the data folder, and never writes to $HOME.
 //! - Folders that are themselves git clones (oh-my-zsh plugins/themes) are recorded as
@@ -21,7 +22,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::State;
 
 use crate::paths::expand_home;
-use crate::storage::{data_root, ConfigState};
+use crate::storage::{backup_root, data_root, ConfigState};
 
 /// Files bigger than this are skipped (dotfiles are small; big files are usually binaries).
 const MAX_FILE_BYTES: u64 = 1024 * 1024;
@@ -225,8 +226,12 @@ fn collect(path: &Path, home: &Path, out: &mut Collected) {
     out.files.push(SourceFile { path: path.to_path_buf(), rel, size: meta.len(), mode: meta.permissions().mode() & 0o777 });
 }
 
+/// `<backup-dir>/dotfiles` when a backup folder is chosen, else the legacy `<data-dir>/configs`.
 fn configs_dir(state: &State<ConfigState>) -> CmdResult<PathBuf> {
-    Ok(data_root(state)?.join("configs"))
+    match backup_root(state)? {
+        Some(b) => Ok(b.join("dotfiles")),
+        None => Ok(data_root(state)?.join("configs")),
+    }
 }
 
 fn load_manifest(dir: &Path) -> Manifest {

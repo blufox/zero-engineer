@@ -45,7 +45,7 @@ export default function App() {
             <Route
               path="settings"
               element={<SettingsPage dataDir={config.dataDir}
-                onDataDirChange={(dataDir) => setConfig({ dataDir })} />}
+                onDataDirChange={(dataDir) => setConfig((c) => ({ ...c!, dataDir }))} />}
             />
             {MODULES.filter((m) => m.milestone).map((m) => (
               <Route key={m.id} path={m.path.slice(1)} element={<Placeholder mod={m} />} />

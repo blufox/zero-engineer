@@ -258,7 +258,7 @@ export default function SettingsPage({ dataDir, onDataDirChange }: {
 
         <Card>
           <h2 className="mb-4 text-sm font-semibold">Tracked dotfiles</h2>
-          <ListField label="Files & folders" hint="Exported to configs/ in the data repo (M7)."
+          <ListField label="Files & folders" hint="Exported to the backup folder chosen on the Config Backup page."
             value={settings.dotfiles} onSave={(v) => update({ dotfiles: v })} />
         </Card>
       </div>

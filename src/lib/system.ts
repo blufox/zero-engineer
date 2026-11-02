@@ -137,6 +137,20 @@ export const configs = {
 };
 
 // ---------------------------------------------------------------------------
+// App data backup (settings, snippets, cheat sheets, glossary ↔ <backupDir>/zero)
+// ---------------------------------------------------------------------------
+
+export interface CategoryStatus { name: string; local: number; backup: number; toExport: number; toImport: number; toRemove: number }
+export interface AppDataStatus { backupDir: string | null; categories: CategoryStatus[]; secrets: SecretHit[] }
+export interface SyncSummary { added: string[]; updated: string[]; removed: string[]; unchanged: number }
+
+export const appData = {
+  status: () => invoke<AppDataStatus>("app_data_status"),
+  export: () => invoke<SyncSummary>("export_app_data"),
+  import: () => invoke<SyncSummary>("import_app_data"),
+};
+
+// ---------------------------------------------------------------------------
 // App integration
 // ---------------------------------------------------------------------------
 

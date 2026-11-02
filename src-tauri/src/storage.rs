@@ -26,6 +26,10 @@ const DATA_SUBDIRS: &[&str] = &["cheatsheets", "glossary", "snippets", "configs"
 #[serde(rename_all = "camelCase")]
 pub struct AppConfig {
     pub data_dir: Option<String>,
+    /// Where Config Backup writes dotfiles and app data. Machine-local, so a new PC can
+    /// point at a freshly cloned backup repo before any data exists. `None` = `<data>/configs`.
+    #[serde(default)]
+    pub backup_dir: Option<String>,
 }
 
 pub struct ConfigState(pub Mutex<AppConfig>);
@@ -51,7 +55,7 @@ pub fn load_config(app: &AppHandle) -> AppConfig {
 }
 
 /// Write via temp file + rename so a crash never leaves half-written JSON.
-fn atomic_write(path: &Path, contents: &[u8]) -> CmdResult<()> {
+pub(crate) fn atomic_write(path: &Path, contents: &[u8]) -> CmdResult<()> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(err)?;
     }
@@ -70,6 +74,18 @@ pub(crate) fn data_root(state: &State<ConfigState>) -> CmdResult<PathBuf> {
         .as_ref()
         .map(PathBuf::from)
         .ok_or_else(|| "Data folder is not configured yet".to_string())
+}
+
+/// The user-chosen backup folder, if any.
+pub(crate) fn backup_root(state: &State<ConfigState>) -> CmdResult<Option<PathBuf>> {
+    Ok(state.0.lock().map_err(err)?.backup_dir.as_ref().map(PathBuf::from))
+}
+
+fn save_config(app: &AppHandle, state: &State<ConfigState>, config: AppConfig) -> CmdResult<AppConfig> {
+    let json = serde_json::to_vec_pretty(&config).map_err(err)?;
+    atomic_write(&config_file(app)?, &json)?;
+    *state.0.lock().map_err(err)? = config.clone();
+    Ok(config)
 }
 
 /// Resolve a frontend-supplied relative path inside the data folder.
@@ -144,18 +160,42 @@ pub fn set_data_dir(
         git_initialized = true;
     }
 
-    let config = AppConfig {
+    let current = state.0.lock().map_err(err)?.clone();
+    let config = save_config(&app, &state, AppConfig {
         data_dir: Some(root.to_string_lossy().into_owned()),
-    };
-    let json = serde_json::to_vec_pretty(&config).map_err(err)?;
-    atomic_write(&config_file(&app)?, &json)?;
-    *state.0.lock().map_err(err)? = config.clone();
+        ..current
+    })?;
 
     Ok(DataDirResult {
         config,
         git_initialized,
         already_git_repo,
     })
+}
+
+/// Choose (or with `None`, reset) the backup folder. It is created if missing.
+#[tauri::command]
+pub fn set_backup_dir(app: AppHandle, state: State<ConfigState>, path: Option<String>) -> CmdResult<AppConfig> {
+    let current = state.0.lock().map_err(err)?.clone();
+    let backup_dir = match path.as_deref().map(str::trim).filter(|p| !p.is_empty()) {
+        None => None,
+        Some(p) => {
+            let dir = expand_home(p);
+            if !dir.is_absolute() {
+                return Err("Please choose an absolute folder path".into());
+            }
+            let home = std::env::var("HOME").map(PathBuf::from).unwrap_or_default();
+            if dir == Path::new("/") || dir == home {
+                return Err("Pick a dedicated folder, not / or your home folder".into());
+            }
+            if current.data_dir.as_deref().map(Path::new) == Some(dir.as_path()) {
+                return Err("The backup folder must be different from the data folder".into());
+            }
+            fs::create_dir_all(&dir).map_err(err)?;
+            Some(dir.to_string_lossy().into_owned())
+        }
+    };
+    save_config(&app, &state, AppConfig { backup_dir, ..current })
 }
 
 /// Read a JSON file from the data folder. Returns `null` if it doesn't exist.

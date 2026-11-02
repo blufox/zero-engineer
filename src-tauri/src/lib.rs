@@ -1,3 +1,4 @@
+mod backup;
 mod configs;
 mod files;
 mod launch;
@@ -25,6 +26,7 @@ pub fn run() {
             storage::get_app_config,
             storage::default_data_dir,
             storage::set_data_dir,
+            storage::set_backup_dir,
             storage::read_json,
             storage::write_json,
             storage::delete_json,
@@ -48,6 +50,9 @@ pub fn run() {
             configs::export_configs,
             configs::config_backup_text,
             configs::config_current_text,
+            backup::app_data_status,
+            backup::export_app_data,
+            backup::import_app_data,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

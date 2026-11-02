@@ -15,7 +15,7 @@ It runs entirely offline. Your content stays on your machine as plain JSON.
 | **Repositories** | Every git repo under your scan roots, with branch, changes, ahead/behind, stack and open in Vim |
 | **Running Servers** | artisan serve, runserver, vite and queue workers, plus Apache/MySQL/Postgres/Redis status, with a Stop button |
 | **Glossary** | 149 entries: design patterns (PHP/Python/Dart), smells, refactorings, architecture and principles |
-| **Config Backup** | Copies dotfiles into `configs/`, records plugin clones as URL+commit, and scans for secrets before export |
+| **Config Backup** | Backs up dotfiles and Zero's own data (snippets, cheat sheets, glossary edits, settings) to a folder you choose, and imports them on a new machine. Records plugin clones as URL+commit and scans for secrets before export |
 
 ## Getting started
 Prerequisites: Node.js 20.19+ or 22.12+ (required by Vite 8), a stable Rust toolchain (edition 2024), and the Tauri system libraries:
@@ -59,6 +59,20 @@ scripts/glossary/    Python generators for the glossary seed data
 All content is plain JSON in a data folder you choose on first run (e.g. `~/zero-data`).
 The folder's location is stored in `~/.config/dev.vivico.zero/app.json`.
 Zero never runs git in the data folder, so committing and pushing it is up to you. Settings → App can also save a `.tar.gz` snapshot.
+
+### Backup folder & moving to a new machine
+On the **Config Backup** page, choose a backup folder, ideally a git repo you push (e.g. `~/dotfiles`). The choice is saved per machine in `app.json`. Until you choose one, dotfiles go to `<data folder>/configs/`.
+
+```
+<backup folder>/
+  dotfiles/   mirrored dotfiles + manifest.json (checksums, plugin clones as URL+commit)
+  zero/       settings.json, snippets/, cheatsheets/, glossary/
+```
+
+- **Export** mirrors your data into `zero/`. Deleted snippets are removed from the backup, but a category that is empty locally is never wiped.
+- **Import** copies `zero/` into your data folder. It overwrites files with the same name, never deletes anything, and then reloads the app.
+
+On a new PC: clone your backup repo → start Zero and pick a data folder → Config Backup → choose the cloned repo → **Import**. Dotfiles are not written to `$HOME` automatically. Restore them from `dotfiles/` with *diff → copy backup* or the restore commands shown for plugin clones.
 
 ## Security & privacy
 - **No accounts, API keys or network services.** The app needs no credentials, and the repo has no `.env`.

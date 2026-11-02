@@ -6,6 +6,8 @@ import { invoke } from "@tauri-apps/api/core";
 
 export interface AppConfig {
   dataDir: string | null;
+  /** Machine-local backup folder; null = <dataDir>/configs. */
+  backupDir?: string | null;
 }
 
 export interface DataDirResult {
@@ -34,6 +36,8 @@ export const storage = {
   defaultDataDir: () => invoke<string>("default_data_dir"),
   setDataDir: (path: string, gitInit: boolean) =>
     invoke<DataDirResult>("set_data_dir", { path, gitInit }),
+  /** null resets to the default (<dataDir>/configs). */
+  setBackupDir: (path: string | null) => invoke<AppConfig>("set_backup_dir", { path }),
 
   read: <T>(path: string) => invoke<T | null>("read_json", { path }),
   write: <T>(path: string, value: T) => invoke<void>("write_json", { path, value }),
