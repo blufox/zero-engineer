@@ -37,6 +37,8 @@ export interface Settings {
   excludedPaths: string[];
   /** Dotfiles tracked by the config backup module. */
   dotfiles: string[];
+  /** Let DB snapshots be committed with the backup repo (off: a .gitignore keeps them out). */
+  dbSnapshotsInGit: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -51,6 +53,7 @@ export const DEFAULT_SETTINGS: Settings = {
   scanRoots: ["~/Documents/www"],
   excludedPaths: ["node_modules", "vendor"],
   dotfiles: ["~/.zshrc", "~/.gitconfig", "~/.oh-my-zsh/custom", "~/.ssh/config"],
+  dbSnapshotsInGit: false,
 };
 
 const SETTINGS_FILE = "settings.json";

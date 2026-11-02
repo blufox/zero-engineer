@@ -88,7 +88,7 @@ fn source(path: PathBuf, kind: &str) -> LogSource {
 }
 
 /// The repo root plus its direct sub-folders (for backend/ + frontend/ monorepos).
-fn project_dirs(repo: &Path) -> Vec<PathBuf> {
+pub(crate) fn project_dirs(repo: &Path) -> Vec<PathBuf> {
     let mut dirs = vec![repo.to_path_buf()];
     if let Ok(entries) = fs::read_dir(repo) {
         let mut subs: Vec<PathBuf> = entries
@@ -138,9 +138,12 @@ fn django_settings_files(dir: &Path, depth: usize, out: &mut Vec<PathBuf>) {
     }
 }
 
+/// One Python value in a dict: stops at a `,` or `}` that isn't inside quotes or parentheses.
+pub(crate) const PY_VALUE: &str = r#"((?:'[^'\n]*'|"[^"\n]*"|\([^)\n]*\)|[^,}\n()'"])+)"#;
+
 fn filename_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
-    RE.get_or_init(|| Regex::new(r#"['"]filename['"]\s*:\s*([^\n]+)"#).unwrap())
+    RE.get_or_init(|| Regex::new(&format!(r#"['"]filename['"]\s*:\s*{PY_VALUE}"#)).unwrap())
 }
 
 fn string_re() -> &'static Regex {
@@ -155,32 +158,44 @@ fn getenv_re() -> &'static Regex {
     })
 }
 
-/// Resolve the right-hand side of `'filename': <expr>` to a path, if it's simple enough.
+/// Trim the tail of a value captured up to end-of-line: `BASE_DIR / "x",}}` → `BASE_DIR / "x"`.
+pub(crate) fn trim_py_value(expr: &str) -> &str {
+    expr.trim().trim_end_matches(|c| c == ',' || c == '}' || c == ' ')
+}
+
+/// `os.getenv("X", "default")`, `env("X", default="d")`, `config("X")` → the `.env` value,
+/// else the default. Outer `None`: not an env lookup. Inner `None`: no value found.
+pub(crate) fn py_env_lookup(expr: &str, env: &BTreeMap<String, String>) -> Option<Option<String>> {
+    let c = getenv_re().captures(trim_py_value(expr))?;
+    Some(env.get(&c[1]).cloned().filter(|v| !v.is_empty()).or_else(|| c.get(2).map(|d| d.as_str().to_string())))
+}
+
+/// A Python string value: a literal, or an env lookup (see [`py_env_lookup`]).
+pub(crate) fn py_string(expr: &str, env: &BTreeMap<String, String>) -> Option<String> {
+    let expr = trim_py_value(expr);
+    if let Some(v) = py_env_lookup(expr, env) {
+        return v;
+    }
+    if expr.starts_with('\'') || expr.starts_with('"') {
+        return string_re().captures(expr).map(|c| c[1].to_string());
+    }
+    None
+}
+
+/// Resolve the right-hand side of `'filename': <expr>` (or a sqlite `NAME`) to a path.
 /// `env` is the project's `.env`, used for `os.getenv("X", "default")`-style values.
 pub fn resolve_filename_expr(expr: &str, base: &Path, env: &BTreeMap<String, String>) -> Option<PathBuf> {
-    // Cut at the end of the value: a trailing comma/brace outside the expression.
-    let expr = expr.trim().trim_end_matches(|c| c == ',' || c == '}' || c == ' ');
-    if let Some(c) = getenv_re().captures(expr) {
-        let value = env.get(&c[1]).cloned().filter(|v| !v.is_empty()).or_else(|| c.get(2).map(|d| d.as_str().to_string()))?;
-        return Some(if value.starts_with('/') { PathBuf::from(value) } else { base.join(value) });
-    }
-    let parts: Vec<String> = string_re().captures_iter(expr).map(|c| c[1].to_string()).collect();
-    if parts.is_empty() {
-        return None;
-    }
-    let uses_base = expr.contains("BASE_DIR") || expr.contains("PROJECT_ROOT");
-    let is_plain_literal = expr.starts_with('\'') || expr.starts_with('"');
-    if !uses_base && !is_plain_literal {
-        return None; // env("LOG_FILE"), f-strings with variables, etc.
-    }
-    let mut path = if uses_base || !parts[0].starts_with('/') { base.to_path_buf() } else { PathBuf::new() };
-    for p in &parts {
-        path.push(p.trim_start_matches('/'));
-        if p.starts_with('/') && !uses_base {
-            path = PathBuf::from(p);
+    let expr = trim_py_value(expr);
+    let join = |v: String| if v.starts_with('/') { PathBuf::from(v) } else { base.join(v) };
+    if expr.contains("BASE_DIR") || expr.contains("PROJECT_ROOT") {
+        // BASE_DIR / "logs" / "x.log" or os.path.join(BASE_DIR, "logs", "x.log")
+        let parts: Vec<String> = string_re().captures_iter(expr).map(|c| c[1].to_string()).collect();
+        if parts.is_empty() {
+            return None;
         }
+        return Some(parts.iter().fold(base.to_path_buf(), |p, part| p.join(part.trim_start_matches('/'))));
     }
-    Some(path)
+    py_string(expr, env).map(join)
 }
 
 fn django_logs(dir: &Path) -> Vec<LogSource> {

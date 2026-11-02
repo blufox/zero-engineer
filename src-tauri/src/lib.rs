@@ -1,6 +1,7 @@
 mod backup;
 mod configs;
 mod context;
+mod dbsnap;
 mod envfile;
 mod files;
 mod launch;
@@ -61,6 +62,13 @@ pub fn run() {
             logs::log_sources,
             logs::read_log,
             logs::clear_log,
+            dbsnap::db_tools,
+            dbsnap::db_list,
+            dbsnap::db_snapshot,
+            dbsnap::db_restore,
+            dbsnap::db_delete,
+            dbsnap::db_prune,
+            dbsnap::db_clear,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -199,6 +199,7 @@ export default function RepoPanel({ repo, onClose, onNoteChange }: {
 
       <footer className="flex gap-2 border-t border-line px-5 py-3">
         <Button onClick={() => navigate(`/logs?repo=${encodeURIComponent(repo.path)}`)}>Logs</Button>
+        <Button onClick={() => navigate(`/databases?repo=${encodeURIComponent(repo.path)}`)}>Database</Button>
         <Button onClick={() => launch.terminal(repo.path, settings)}>Terminal</Button>
         <Button onClick={() => launch.editor(repo.path, settings)}>Open in {settings.editorCommand.split(" ")[0]}</Button>
       </footer>

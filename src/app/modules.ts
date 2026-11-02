@@ -1,4 +1,5 @@
 import {
+  Database,
   FolderGit2,
   House,
   Keyboard,
@@ -37,6 +38,8 @@ export const MODULES: ModuleDef[] = [
     description: "Every git repo in your workspace with its status" },
   { id: "servers", label: "Running Servers", path: "/servers", icon: Server,
     description: "Apache, MySQL, artisan, runserver and other listeners" },
+  { id: "databases", label: "Databases", path: "/databases", icon: Database,
+    description: "Snapshot and restore local MySQL, Postgres and SQLite databases" },
   { id: "logs", label: "Logs", path: "/logs", icon: ScrollText,
     description: "Laravel and Django logs, grouped by error, with live tail" },
   { id: "glossary", label: "Glossary", path: "/glossary", icon: Library,

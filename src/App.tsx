@@ -14,6 +14,7 @@ import ServersPage from "./modules/servers/ServersPage";
 import GlossaryPage from "./modules/glossary/GlossaryPage";
 import ConfigsPage from "./modules/configs/ConfigsPage";
 import LogsPage from "./modules/logs/LogsPage";
+import DatabasesPage from "./modules/databases/DatabasesPage";
 import { SettingsProvider } from "./lib/settings";
 import { errorMessage, storage, type AppConfig } from "./lib/storage";
 
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="repos" element={<ReposPage />} />
             <Route path="servers" element={<ServersPage />} />
             <Route path="logs" element={<LogsPage />} />
+            <Route path="databases" element={<DatabasesPage />} />
             <Route path="glossary/:entryId?" element={<GlossaryPage />} />
             <Route path="configs" element={<ConfigsPage />} />
             <Route

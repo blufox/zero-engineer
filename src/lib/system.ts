@@ -210,3 +210,34 @@ export const logs = {
   read: (path: string, offset: number | null) => invoke<LogChunk>("read_log", { path, offset }),
   clear: (path: string) => invoke<void>("clear_log", { path }),
 };
+
+// ---------------------------------------------------------------------------
+// Database snapshots
+// ---------------------------------------------------------------------------
+
+export type DbDriver = "mysql" | "pgsql" | "sqlite";
+export interface DbInfo {
+  driver: DbDriver; host: string; port: number | null; database: string; user: string;
+  hasPassword: boolean; source: string; projectDir: string; local: boolean;
+}
+export interface DbSnapshot {
+  file: string; label: string; created: number; size: number; driver: DbDriver; database: string;
+  branch: string | null; migration: string | null;
+}
+export interface RepoDb { repo: string; slug: string; db: DbInfo | null; error: string | null; snapshots: DbSnapshot[]; totalSize: number }
+export interface DbTools { mysqldump: boolean; mysql: boolean; pgDump: boolean; pgRestore: boolean; gzip: boolean; snapshotsDir: string }
+/** Manual connection, stored at <data-dir>/db-connections/<slug>.json. Never holds a password. */
+export interface DbConnection { driver: DbDriver; host: string; port: number | null; database: string; user: string; socket?: string | null }
+
+export const db = {
+  tools: () => invoke<DbTools>("db_tools"),
+  list: (repos: { path: string; slug: string }[]) => invoke<RepoDb[]>("db_list", { repos }),
+  snapshot: (repo: string, slug: string, label: string, password: string | null, commit: boolean) =>
+    invoke<DbSnapshot>("db_snapshot", { repo, slug, label, password, commit }),
+  /** Returns the automatic "pre-restore" snapshot taken first. */
+  restore: (repo: string, slug: string, file: string, password: string | null, commit: boolean) =>
+    invoke<DbSnapshot>("db_restore", { repo, slug, file, password, commit }),
+  remove: (slug: string, file: string) => invoke<void>("db_delete", { slug, file }),
+  prune: (slug: string, keep: number) => invoke<number>("db_prune", { slug, keep }),
+  clear: (slug: string) => invoke<number>("db_clear", { slug }),
+};
