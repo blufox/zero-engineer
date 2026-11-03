@@ -1,7 +1,7 @@
 # Zero
 
 A personal developer hub for Linux, built with Tauri 2, React 19, TypeScript and Tailwind 4.
-It runs entirely offline. Your content stays on your machine as plain JSON.
+It works offline. Your content stays on your machine as plain JSON. The only network calls are `git fetch` (when you ask) and the Security check, which sends package names and versions to osv.dev and endoflife.date.
 
 - Plan and progress log: [.docs/plan.md](.docs/plan.md)
 - Content sources and verification: [.docs/verification.md](.docs/verification.md)
@@ -12,11 +12,12 @@ It runs entirely offline. Your content stays on your machine as plain JSON.
 | **Dev Tools** | JSON, Base64, JWT, UUID, Unix time, Regex, Cron, Hash |
 | **Cheat Sheets** | Vim, Git, tmux, Laravel Artisan and Django, each checked against the official docs. You can edit, import and export them |
 | **Snippets & Notes** | Code snippets, Markdown notes and TILs in a CodeMirror editor (Vim mode, `:w` saves) |
-| **Repositories** | Every git repo under your scan roots, with branch, changes, ahead/behind, stack and open in Vim. Click a repo for **Where was I?**: uncommitted files by last edit, TODOs you added, recent commits, stashes, a "next step" note and `.env` drift. **Check .env** compares every `.env` with its `.env.example` (key names only) |
+| **Repositories** | Every git repo under your scan roots, with branch, changes, ahead/behind, stack and open in Vim. Click a repo for **Where was I?**: uncommitted files by last edit, TODOs you added, recent commits, stashes, a "next step" note and `.env` drift. **Check .env** compares every `.env` with its `.env.example` (key names only). **Check migrations** runs `migrate:status` / `showmigrations` (read-only) and badges repos with pending migrations |
 | **Logs** | Laravel `storage/logs` and Django `LOGGING` file handlers (plus any file you pin), grouped by error with counts, level filters, search and a live tail. Stack frames open in your editor at the line |
-| **Databases** | Snapshot a project's local MySQL, Postgres or SQLite database (detected from `.env` or Django settings) before a risky migration and restore it with one click. A pre-restore snapshot is taken automatically |
+| **Databases** | Snapshot a project's local MySQL, Postgres or SQLite database (detected from `.env` or Django settings) before a risky migration and restore it with one click. A pre-restore snapshot is taken automatically. Projects with pending migrations get a "snapshot first" hint |
 | **Review** | Spaced-repetition flashcards (SM-2) from cheat sheets and glossary categories you opt into, with a daily new-card limit |
 | **Running Servers** | artisan serve, runserver, vite and queue workers, plus Apache/MySQL/Postgres/Redis status, with a Stop button |
+| **Security** | Reads `composer.lock`, `package-lock.json`, `poetry.lock`, `uv.lock`, `Pipfile.lock` and pinned `requirements*.txt` in every repo, plus your global npm/composer/cargo/uv tools, and checks them against [OSV](https://osv.dev). Flags Laravel, Django, PHP, Python and Node versions past or near end of life ([endoflife.date](https://endoflife.date)). Shows the fixed version and advisory link; ignore or snooze findings. Checks on Refresh, and on launch if the last check is over a day old, with a desktop notification and sidebar badge for new critical/high issues |
 | **Glossary** | 149 entries: design patterns (PHP/Python/Dart), smells, refactorings, architecture and principles |
 | **Config Backup** | Backs up dotfiles and Zero's own data (snippets, cheat sheets, glossary edits, settings, repo notes, review progress) to a folder you choose, and imports them on a new machine. Records plugin clones as URL+commit and scans for secrets before export. **Machine bootstrap** writes a `bootstrap.sh` that reinstalls your apt packages and sources, flatpaks, snaps and global npm/composer/cargo/uv tools |
 
@@ -70,7 +71,7 @@ On the **Config Backup** page, choose a backup folder, ideally a git repo you pu
 ```
 <backup folder>/
   dotfiles/      mirrored dotfiles + manifest.json (checksums, plugin clones as URL+commit)
-  zero/          settings.json, snippets/, cheatsheets/, glossary/, repo-notes/, review/, logs/, db-connections/
+  zero/          settings.json, snippets/, cheatsheets/, glossary/, repo-notes/, review/, logs/, db-connections/, security/
   bootstrap/     bootstrap.sh, packages.json, apt/ (third-party sources and their keyrings)
   db-snapshots/  <repo>/<timestamp>__<db>__<label>.sql.gz|.dump|.sqlite + index.json (git-ignored by default)
 ```

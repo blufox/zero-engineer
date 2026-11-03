@@ -43,6 +43,8 @@ export interface Settings {
   review: { decks: string[]; newPerDay: number };
   /** Machine bootstrap: "<section>:<name>" → ticked or not, where you changed the default. */
   bootstrapOverrides: Record<string, boolean>;
+  /** Security: check once on launch when the last check is over a day old. */
+  securityCheckOnLaunch: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -60,6 +62,7 @@ export const DEFAULT_SETTINGS: Settings = {
   dbSnapshotsInGit: false,
   review: { decks: [], newPerDay: 10 },
   bootstrapOverrides: {},
+  securityCheckOnLaunch: true,
 };
 
 const SETTINGS_FILE = "settings.json";

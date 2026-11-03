@@ -9,6 +9,7 @@ import { db, type DbConnection, type DbDriver, type DbTools, type RepoDb, type R
 import { loadRepos } from "../repos/ReposPage";
 import { noteSlug } from "../repos/notes";
 import { Toggle } from "../tools/shared";
+import { useMigrations } from "../../lib/migrations";
 import { relative } from "../tools/time";
 
 const DRIVER_LABEL: Record<DbDriver, string> = { mysql: "MySQL", pgsql: "PostgreSQL", sqlite: "SQLite" };
@@ -71,6 +72,7 @@ function RepoCard({ item, name, tools, highlight, onChanged }: {
   const needsPassword = d && d.driver !== "sqlite" && !d.hasPassword;
   const pw = password || null;
   const commit = settings.dbSnapshotsInGit;
+  const pending = useMigrations()[item.repo]?.pending ?? [];
 
   useEffect(() => { if (highlight) ref.current?.scrollIntoView({ block: "center" }); }, [highlight]);
 
@@ -168,6 +170,11 @@ function RepoCard({ item, name, tools, highlight, onChanged }: {
         </p>
       )}
 
+      {d?.local && missing.length === 0 && pending.length > 0 && (
+        <p className="mt-3 flex items-center gap-2 rounded-md bg-warn/10 px-3 py-2 text-xs text-warn" title={pending.join("\n")}>
+          <TriangleAlert size={13} /> {pending.length} pending migration{pending.length > 1 ? "s" : ""}. Take a snapshot before you migrate.
+        </p>
+      )}
       {d?.local && missing.length === 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <Input className="w-64" placeholder="Label, e.g. before add_orders migration" value={label}

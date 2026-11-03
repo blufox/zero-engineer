@@ -7,8 +7,10 @@ mod envfile;
 mod files;
 mod launch;
 mod logs;
+mod migrations;
 mod paths;
 mod repos;
+mod security;
 mod servers;
 mod storage;
 
@@ -20,6 +22,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_notification::init())
         // Remembers window size/position between launches.
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .setup(|app| {
@@ -73,6 +76,9 @@ pub fn run() {
             bootstrap::bootstrap_scan,
             bootstrap::bootstrap_preview,
             bootstrap::bootstrap_export,
+            migrations::migration_status,
+            security::security_scan,
+            security::security_last,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -257,3 +257,35 @@ export const bootstrap = {
   /** Returns the path of the written bootstrap.sh. */
   export: (scan: BootstrapScan) => invoke<string>("bootstrap_export", { scan }),
 };
+
+// ---------------------------------------------------------------------------
+// Migrations
+// ---------------------------------------------------------------------------
+
+export interface MigrationStatus { path: string; framework: "Laravel" | "Django" | null; pending: string[]; error: string | null }
+
+export const migrations = {
+  status: (paths: string[]) => invoke<MigrationStatus[]>("migration_status", { paths }),
+};
+
+// ---------------------------------------------------------------------------
+// Security
+// ---------------------------------------------------------------------------
+
+export type Severity = "critical" | "high" | "medium" | "low" | "unknown";
+export interface VulnLocation { repo: string | null; file: string }
+export interface VulnAffected { repo: string | null; file: string; version: string; fixed: string | null }
+export interface VulnFinding {
+  id: string; aliases: string[]; severity: Severity; summary: string; ecosystem: string; package: string;
+  url: string; advisory: string | null; affected: VulnAffected[];
+}
+export interface EolItem {
+  product: string; cycle: string; eol: string | null; status: "eol" | "soon" | "ok" | "unknown";
+  latest: string | null; used: VulnLocation[];
+}
+export interface SecurityReport { scannedAt: number; packages: number; findings: VulnFinding[]; eol: EolItem[]; notes: string[] }
+
+export const security = {
+  scan: (paths: string[]) => invoke<SecurityReport>("security_scan", { paths }),
+  last: () => invoke<SecurityReport | null>("security_last"),
+};

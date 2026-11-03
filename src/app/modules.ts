@@ -10,6 +10,7 @@ import {
   ScrollText,
   Server,
   Settings,
+  ShieldAlert,
   Wrench,
   type LucideIcon,
 } from "lucide-react";
@@ -45,6 +46,8 @@ export const MODULES: ModuleDef[] = [
     description: "Snapshot and restore local MySQL, Postgres and SQLite databases" },
   { id: "logs", label: "Logs", path: "/logs", icon: ScrollText,
     description: "Laravel and Django logs, grouped by error, with live tail" },
+  { id: "security", label: "Security", path: "/security", icon: ShieldAlert,
+    description: "Known vulnerabilities and end-of-life versions in your projects and tools" },
   { id: "glossary", label: "Glossary", path: "/glossary", icon: Library,
     description: "Design patterns, refactoring, architecture and principles" },
   { id: "configs", label: "Config Backup", path: "/configs", icon: Save,

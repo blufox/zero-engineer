@@ -82,7 +82,7 @@ pub struct Preview {
 // ---------------------------------------------------------------------------
 
 /// Find a binary on PATH, or in the usual per-user places a desktop launcher's PATH misses.
-fn find_bin(name: &str) -> Option<PathBuf> {
+pub(crate) fn find_bin(name: &str) -> Option<PathBuf> {
     let path = std::env::var("PATH").unwrap_or_default();
     let mut dirs: Vec<PathBuf> = path.split(':').filter(|d| !d.is_empty()).map(PathBuf::from).collect();
     for d in ["~/.cargo/bin", "~/.local/bin", "~/.config/composer/vendor/bin", "/usr/local/bin", "/snap/bin"] {
@@ -105,7 +105,7 @@ fn nvm_bin() -> Option<PathBuf> {
 }
 
 /// Run a tool and return stdout, or None if it's missing or fails.
-fn run(bin: &str, args: &[&str]) -> Option<String> {
+pub(crate) fn run(bin: &str, args: &[&str]) -> Option<String> {
     let exe = find_bin(bin)?;
     let mut cmd = Command::new(&exe);
     cmd.args(args).stdin(Stdio::null()).stderr(Stdio::null());

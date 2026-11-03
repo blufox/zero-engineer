@@ -6,8 +6,11 @@ import { cx } from "../components/ui";
 import Logo from "../components/Logo";
 import CommandPalette from "./CommandPalette";
 import ErrorBoundary from "../components/ErrorBoundary";
+import { useSettings } from "../lib/settings";
+import { STALE_MS, loadSecurity, peekSecurity, scanSecurity, urgentCount, useSecurity } from "../lib/security";
+import { loadRepos } from "../modules/repos/ReposPage";
 
-function NavItem({ mod }: { mod: ModuleDef }) {
+function NavItem({ mod, badge }: { mod: ModuleDef; badge?: number }) {
   const Icon = mod.icon;
   return (
     <NavLink
@@ -22,6 +25,9 @@ function NavItem({ mod }: { mod: ModuleDef }) {
     >
       <Icon size={16} strokeWidth={1.75} />
       <span className="flex-1 truncate">{mod.label}</span>
+      {!!badge && (
+        <span className="rounded-full bg-danger/15 px-1.5 font-mono text-[10px] font-medium text-danger" title={`${badge} critical/high issues`}>{badge}</span>
+      )}
       {mod.milestone && (
         <span className="font-mono text-[10px] text-muted/60 group-hover:text-muted">{mod.milestone}</span>
       )}
@@ -35,6 +41,25 @@ export default function Layout() {
   // Full-bleed modules manage their own layout (sub-navigation, full-height editors).
   const { pathname } = useLocation();
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const { settings } = useSettings();
+  const sec = useSecurity();
+  const badges: Record<string, number> = { security: urgentCount(sec.report, sec.ignored) };
+
+  // Security: once per launch, re-check if the last report is over a day old.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      await loadSecurity();
+      const { securityCheckOnLaunch, scanRoots, excludedPaths } = settings;
+      const { report } = peekSecurity();
+      if (cancelled || !securityCheckOnLaunch) return;
+      if (report && Date.now() - report.scannedAt * 1000 < STALE_MS) return;
+      const list = await loadRepos({ scanRoots, excludedPaths });
+      if (!cancelled) await scanSecurity(list.map((r) => r.path), true);
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Ctrl+K anywhere opens the command palette (even while typing).
   useEffect(() => {
@@ -62,7 +87,7 @@ export default function Layout() {
           <kbd className="rounded border border-line px-1 font-mono text-[10px]">Ctrl K</kbd>
         </button>
         <nav className="flex flex-1 flex-col gap-0.5 px-2">
-          {main.map((m) => <NavItem key={m.id} mod={m} />)}
+          {main.map((m) => <NavItem key={m.id} mod={m} badge={badges[m.id]} />)}
         </nav>
         <nav className="flex flex-col gap-0.5 border-t border-line p-2">
           {footer.map((m) => <NavItem key={m.id} mod={m} />)}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowDown, ArrowUp, CloudDownload, FolderOpen, GitBranch, Globe, KeyRound, RefreshCw, Search, SquareTerminal, FileCode2,
+  ArrowDown, ArrowUp, CloudDownload, DatabaseZap, FolderOpen, GitBranch, Globe, KeyRound, RefreshCw, Search, SquareTerminal, FileCode2,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { Button, Kbd, cx } from "../../components/ui";
@@ -8,6 +8,7 @@ import { useSettings, type Settings } from "../../lib/settings";
 import { errorMessage } from "../../lib/storage";
 import { context, hasDrift, isDirty, launch, repos, type EnvDrift, type RepoInfo } from "../../lib/system";
 import RepoPanel from "./RepoPanel";
+import { checkMigrations, useMigrations } from "../../lib/migrations";
 import { Toggle } from "../tools/shared";
 import { relative } from "../tools/time";
 
@@ -67,7 +68,6 @@ export default function ReposPage() {
   const [sort, setSort] = useState<Sort>("activity");
   const [fetching, setFetching] = useState<Set<string>>(new Set());
   const [rowErrors, setRowErrors] = useState<Record<string, string>>({});
-  const [fetchAll, setFetchAll] = useState<{ done: number; total: number } | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const [params, setParams] = useSearchParams();
   const selectedPath = params.get("repo");
@@ -77,6 +77,20 @@ export default function ReposPage() {
   const closePanel = useCallback(() => select(null), [select]);
   const [envDrift, setEnvDrift] = useState<Record<string, EnvDrift> | null>(null);
   const [checkingEnv, setCheckingEnv] = useState(false);
+  const migrationsByPath = useMigrations();
+  const [checkingMigrations, setCheckingMigrations] = useState(false);
+
+  async function checkAllMigrations() {
+    if (!list) return;
+    setCheckingMigrations(true);
+    try {
+      await checkMigrations(list.filter((r) => r.stacks.includes("Laravel") || r.stacks.includes("Django")).map((r) => r.path));
+    } catch (e) {
+      setError(errorMessage(e));
+    } finally {
+      setCheckingMigrations(false);
+    }
+  }
 
   async function checkEnv() {
     if (!list) return;
@@ -134,20 +148,6 @@ export default function ReposPage() {
     }
   }
 
-  async function fetchEverything() {
-    const targets = (list ?? []).filter((r) => r.remoteUrl);
-    setFetchAll({ done: 0, total: targets.length });
-    const queue = [...targets];
-    // A few at a time: fast, without hammering the network or SSH agent.
-    await Promise.all(Array.from({ length: 4 }, async () => {
-      for (let r = queue.shift(); r; r = queue.shift()) {
-        await fetchOne(r);
-        setFetchAll((p) => p && { ...p, done: p.done + 1 });
-      }
-    }));
-    setFetchAll(null);
-  }
-
   async function run(action: () => Promise<void>, path: string) {
     try { await action(); } catch (e) { setRowErrors((m) => ({ ...m, [path]: errorMessage(e) })); }
   }
@@ -199,9 +199,9 @@ export default function ReposPage() {
             <Button onClick={checkEnv} disabled={!list || checkingEnv} title="Compare .env with .env.example in every repo (key names only)">
               <KeyRound size={14} className={cx(checkingEnv && "animate-pulse")} /> Check .env
             </Button>
-            <Button onClick={fetchEverything} disabled={!list || !!fetchAll} title="git fetch --all --prune in every repo with a remote">
-              <CloudDownload size={14} className={cx(fetchAll && "animate-pulse")} />
-              {fetchAll ? `Fetching ${fetchAll.done}/${fetchAll.total}` : "Fetch all"}
+            <Button onClick={checkAllMigrations} disabled={!list || checkingMigrations}
+              title="Run migrate:status / showmigrations in every Laravel and Django repo (read-only)">
+              <DatabaseZap size={14} className={cx(checkingMigrations && "animate-pulse")} /> Check migrations
             </Button>
             <Button onClick={scan} disabled={scanning}>
               <RefreshCw size={14} className={cx(scanning && "animate-spin")} /> Refresh
@@ -242,6 +242,7 @@ export default function ReposPage() {
             const rowError = rowErrors[r.path] ?? r.error;
             const drift = envDrift?.[r.path];
             const driftCount = drift ? drift.missing.length + drift.empty.length + (drift.hasEnv ? 0 : 1) : 0;
+            const mig = migrationsByPath[r.path];
             return (
               <div key={r.path}
                 onClick={(e) => { if (!(e.target as HTMLElement).closest("button, a")) select(selectedPath === r.path ? null : r.path); }}
@@ -259,6 +260,14 @@ export default function ReposPage() {
                         title={drift.hasEnv ? `Missing: ${drift.missing.join(", ") || "none"}\nEmpty: ${drift.empty.join(", ") || "none"}` : "No .env file"}>
                         .env {drift.hasEnv ? `${driftCount} to fix` : "missing"}
                       </span>
+                    )}
+                    {mig && mig.pending.length > 0 && (
+                      <span className="rounded bg-warn/10 px-1.5 py-0.5 text-[10px] font-medium text-warn" title={mig.pending.join("\n")}>
+                        {mig.pending.length} pending migration{mig.pending.length > 1 ? "s" : ""}
+                      </span>
+                    )}
+                    {mig?.error && (
+                      <span className="rounded bg-surface-2 px-1.5 py-0.5 text-[10px] font-medium text-muted" title={mig.error}>migrations: couldn't check</span>
                     )}
                   </div>
                   <div className="flex shrink-0 items-center opacity-60 transition group-hover:opacity-100">

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Archive, FileCode2, GitCommitHorizontal, KeyRound, ListTodo, RefreshCw, StickyNote, X } from "lucide-react";
+import { Archive, DatabaseZap, FileCode2, GitCommitHorizontal, KeyRound, ListTodo, RefreshCw, StickyNote, X } from "lucide-react";
 import { Button, cx } from "../../components/ui";
 import { useSettings } from "../../lib/settings";
 import { errorMessage } from "../../lib/storage";
 import { context, launch, type EnvDrift, type RepoContext, type RepoInfo } from "../../lib/system";
 import { relative } from "../tools/time";
 import { readNote, writeNote, type RepoNote } from "./notes";
+import { checkMigrations, useMigrations } from "../../lib/migrations";
 
 function Section({ icon: Icon, title, count, children }: {
   icon: typeof StickyNote; title: string; count?: number; children: React.ReactNode;
@@ -47,6 +48,32 @@ export function EnvDriftView({ env }: { env: EnvDrift }) {
       ))}
       <p className="text-muted/70">Compared with {env.exampleFile}. Values are never read into the app.</p>
     </div>
+  );
+}
+
+function MigrationsSection({ path }: { path: string }) {
+  const mig = useMigrations()[path];
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const check = async () => {
+    setBusy(true);
+    setError(null);
+    try { await checkMigrations([path]); } catch (e) { setError(errorMessage(e)); } finally { setBusy(false); }
+  };
+  return (
+    <Section icon={DatabaseZap} title="Migrations" count={mig?.pending.length}>
+      {mig?.error || error ? <p className="text-xs text-danger" title={mig?.error ?? error ?? ""}>{mig?.error ?? error}</p>
+        : !mig ? <p className="text-xs text-muted">Not checked.</p>
+        : mig.pending.length === 0 ? <p className="text-xs text-accent">All {mig.framework} migrations have run.</p>
+        : (
+          <ul className="space-y-0.5 font-mono text-xs text-warn">
+            {mig.pending.map((m) => <li key={m} className="selectable truncate" title={m}>{m}</li>)}
+          </ul>
+        )}
+      <Button variant="ghost" className="px-2 py-1 text-xs" onClick={check} disabled={busy}>
+        <RefreshCw size={12} className={cx(busy && "animate-spin")} /> {mig ? "Check again" : "Check pending migrations"}
+      </Button>
+    </Section>
   );
 }
 
@@ -193,6 +220,8 @@ export default function RepoPanel({ repo, onClose, onNoteChange }: {
             <Section icon={KeyRound} title=".env">
               <EnvDriftView env={ctx.env} />
             </Section>
+
+            {(repo.stacks.includes("Laravel") || repo.stacks.includes("Django")) && <MigrationsSection path={repo.path} />}
           </>
         )}
       </div>
